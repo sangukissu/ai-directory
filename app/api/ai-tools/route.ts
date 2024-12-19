@@ -9,18 +9,16 @@ const GET_AI_TOOLS = gql`
       after: $after, 
       where: { 
         status: PUBLISH,
-        ...(category ? {
-          taxQuery: {
-            taxArray: [
-              {
-                taxonomy: AI_TOOL_CATEGORY,
-                field: SLUG,
-                terms: [$category],
-                operator: IN
-              }
-            ]
-          }
-        } : {})
+        taxQuery: $category ? {
+          taxArray: [
+            {
+              taxonomy: AI_TOOL_CATEGORY,
+              field: SLUG,
+              terms: [$category],
+              operator: IN
+            }
+          ]
+        } : null
       }
     ) {
       pageInfo {
