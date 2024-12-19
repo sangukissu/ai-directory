@@ -9,16 +9,18 @@ const GET_AI_TOOLS = gql`
       after: $after, 
       where: { 
         status: PUBLISH,
-        taxQuery: {
-          taxArray: [
-            {
-              taxonomy: AITOOLCATEGORY,
-              field: SLUG,
-              terms: [$category],
-              operator: IN
-            }
-          ]
-        }
+        ...($category ? {
+          taxQuery: {
+            taxArray: [
+              {
+                taxonomy: AITOOLCATEGORY,
+                field: SLUG,
+                terms: [$category],
+                operator: IN
+              }
+            ]
+          }
+        } : {})
       }
     ) {
       pageInfo {
@@ -52,7 +54,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const first = parseInt(searchParams.get('first') || '20', 10)
   const after = searchParams.get('after')
-  const category = searchParams.get('category')
+  const category = searchParams.get('category') || null
 
   try {
     const { data } = await client.query({
