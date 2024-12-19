@@ -30,6 +30,10 @@ interface AITool {
       sourceUrl: string;
     };
   };
+  toolUrl: string;
+  pricingModel: string;
+  rating: number;
+  affiliateLink: string;
 }
 
 interface AIToolsResponse {
