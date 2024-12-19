@@ -2,6 +2,40 @@ import { NextResponse } from 'next/server'
 import { gql } from '@apollo/client'
 import client from '@/lib/apollo-client'
 
+interface AIToolCategory {
+  name: string;
+  slug: string;
+}
+
+interface AITool {
+  id: string;
+  title: string;
+  excerpt: string;
+  slug: string;
+  aiToolCategories: {
+    nodes: AIToolCategory[];
+  };
+  featuredImage: {
+    node: {
+      sourceUrl: string;
+    };
+  };
+}
+
+interface AIToolEdge {
+  node: AITool;
+}
+
+interface AIToolsResponse {
+  aiTools: {
+    pageInfo: {
+      hasNextPage: boolean;
+      endCursor: string;
+    };
+    edges: AIToolEdge[];
+  };
+}
+
 const GET_AI_TOOLS = gql`
   query GetAITools($first: Int!, $after: String) {
     aiTools(first: $first, after: $after, where: { status: PUBLISH }) {
@@ -39,7 +73,7 @@ export async function GET(request: Request) {
   const category = searchParams.get('category')
 
   try {
-    const { data } = await client.query({
+    const { data } = await client.query<AIToolsResponse>({
       query: GET_AI_TOOLS,
       variables: { 
         first,
@@ -51,8 +85,8 @@ export async function GET(request: Request) {
     let filteredTools = data.aiTools.edges;
 
     if (category) {
-      filteredTools = filteredTools.filter(edge => 
-        edge.node.aiToolCategories.nodes.some(cat => cat.slug === category)
+      filteredTools = filteredTools.filter((edge: AIToolEdge) => 
+        edge.node.aiToolCategories.nodes.some((cat: AIToolCategory) => cat.slug === category)
       );
     }
 
