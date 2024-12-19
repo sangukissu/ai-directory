@@ -251,7 +251,6 @@ export default async function ToolPage({ params }: { params: { slug: string } })
                 )}
               </div>
 
-              {/* Add the promote section */}
               <PromoteTool toolName={tool.title} toolSlug={tool.slug} />
             </div>
 
