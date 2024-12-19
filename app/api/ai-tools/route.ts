@@ -3,25 +3,8 @@ import { gql } from '@apollo/client'
 import client from '@/lib/apollo-client'
 
 const GET_AI_TOOLS = gql`
-  query GetAITools($first: Int!, $after: String, $category: String) {
-    aiTools(
-      first: $first, 
-      after: $after, 
-      where: { 
-        status: PUBLISH,
-        taxQuery: $category ? {
-          relation: AND,
-          taxArray: [
-            {
-              taxonomy: AI_TOOL_CATEGORY,
-              field: SLUG,
-              terms: [$category],
-              operator: IN
-            }
-          ]
-        } : null
-      }
-    ) {
+  query GetAITools($first: Int!, $after: String) {
+    aiTools(first: $first, after: $after, where: { status: PUBLISH }) {
       pageInfo {
         hasNextPage
         endCursor
@@ -43,10 +26,6 @@ const GET_AI_TOOLS = gql`
               sourceUrl
             }
           }
-          toolUrl
-          pricingModel
-          rating
-          affiliateLink
         }
       }
     }
@@ -57,15 +36,13 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const first = parseInt(searchParams.get('first') || '20', 10)
   const after = searchParams.get('after')
-  const category = searchParams.get('category')
 
   try {
     const { data } = await client.query({
       query: GET_AI_TOOLS,
       variables: { 
         first,
-        after,
-        category
+        after
       },
       fetchPolicy: 'no-cache'
     })
