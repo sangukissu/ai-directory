@@ -85,10 +85,16 @@ export async function GET(request: Request) {
     let filteredTools = data.aiTools.edges;
 
     if (category) {
+      const decodedCategory = decodeURIComponent(category).toLowerCase();
       filteredTools = filteredTools.filter((edge: AIToolEdge) => 
-        edge.node.aiToolCategories.nodes.some((cat: AIToolCategory) => cat.slug === category)
+        edge.node.aiToolCategories.nodes.some((cat: AIToolCategory) => 
+          cat.slug.toLowerCase() === decodedCategory ||
+          cat.name.toLowerCase().replace(/\s+/g, '-') === decodedCategory
+        )
       );
     }
+
+    console.log(`Category: ${category}, Filtered Tools Count: ${filteredTools.length}`);
 
     return NextResponse.json({
       pageInfo: data.aiTools.pageInfo,
