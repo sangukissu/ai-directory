@@ -66,6 +66,13 @@ const GET_AI_TOOLS = gql`
   }
 `
 
+function normalizeSlug(slug: string): string {
+  // Convert to lowercase and remove any special characters
+  return slug.toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-') // Replace any non-alphanumeric characters with hyphens
+    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const first = parseInt(searchParams.get('first') || '20', 10)
@@ -85,16 +92,25 @@ export async function GET(request: Request) {
     let filteredTools = data.aiTools.edges;
 
     if (category) {
-      const decodedCategory = decodeURIComponent(category).toLowerCase();
-      filteredTools = filteredTools.filter((edge: AIToolEdge) => 
-        edge.node.aiToolCategories.nodes.some((cat: AIToolCategory) => 
-          cat.slug.toLowerCase() === decodedCategory ||
-          cat.name.toLowerCase().replace(/\s+/g, '-') === decodedCategory
-        )
-      );
-    }
+      const normalizedRequestCategory = normalizeSlug(category);
+      console.log('Normalized requested category:', normalizedRequestCategory);
 
-    console.log(`Category: ${category}, Filtered Tools Count: ${filteredTools.length}`);
+      filteredTools = filteredTools.filter((edge: AIToolEdge) => {
+        const matchingCategory = edge.node.aiToolCategories.nodes.some(cat => {
+          const normalizedCatSlug = normalizeSlug(cat.slug);
+          const normalizedCatName = normalizeSlug(cat.name);
+          console.log('Comparing with:', { 
+            normalizedCatSlug, 
+            normalizedCatName, 
+            matches: normalizedCatSlug === normalizedRequestCategory || normalizedCatName === normalizedRequestCategory 
+          });
+          return normalizedCatSlug === normalizedRequestCategory || normalizedCatName === normalizedRequestCategory;
+        });
+        return matchingCategory;
+      });
+
+      console.log(`Category: ${category}, Filtered Tools Count: ${filteredTools.length}`);
+    }
 
     return NextResponse.json({
       pageInfo: data.aiTools.pageInfo,
