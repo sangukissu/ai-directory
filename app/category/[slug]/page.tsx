@@ -48,7 +48,7 @@ interface AIToolsResponse {
 
 async function getToolsByCategory(categorySlug: string, first: number = 20, after: string | null = null): Promise<AIToolsResponse> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-  const url = new URL(`${apiUrl}/api/ai-tools`);
+  const url = new URL(`${apiUrl}/api/category-tools`);
   url.searchParams.append('first', first.toString());
   url.searchParams.append('category', categorySlug);
   if (after) url.searchParams.append('after', after);
