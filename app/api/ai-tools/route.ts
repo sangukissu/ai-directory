@@ -3,24 +3,8 @@ import { gql } from '@apollo/client'
 import client from '@/lib/apollo-client'
 
 const GET_AI_TOOLS = gql`
-  query GetAITools($first: Int!, $after: String, $category: String) {
-    aiTools(
-      first: $first, 
-      after: $after, 
-      where: { 
-        status: PUBLISH,
-        taxQuery: $category ? {
-          taxArray: [
-            {
-              taxonomy: AI_TOOL_CATEGORY,
-              field: SLUG,
-              terms: [$category],
-              operator: IN
-            }
-          ]
-        } : null
-      }
-    ) {
+  query GetAITools($first: Int!, $after: String) {
+    aiTools(first: $first, after: $after, where: { status: PUBLISH }) {
       pageInfo {
         hasNextPage
         endCursor
@@ -59,13 +43,23 @@ export async function GET(request: Request) {
       query: GET_AI_TOOLS,
       variables: { 
         first,
-        after,
-        category
+        after
       },
       fetchPolicy: 'no-cache'
     })
 
-    return NextResponse.json(data.aiTools)
+    let filteredTools = data.aiTools.edges;
+
+    if (category) {
+      filteredTools = filteredTools.filter(edge => 
+        edge.node.aiToolCategories.nodes.some(cat => cat.slug === category)
+      );
+    }
+
+    return NextResponse.json({
+      pageInfo: data.aiTools.pageInfo,
+      edges: filteredTools
+    })
   } catch (error) {
     console.error('Error fetching AI Tools:', error)
     return NextResponse.json(
