@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation'
 import { ToolSidebar } from '@/components/tool-sidebar'
 import { PromoteTool } from "@/components/promote-tool"
 import { Metadata } from 'next'
-import { generateMetadata as generateSEOMetadata, generateTechArticleSchema, generateWebPageSchema, cleanExcerpt } from '@/lib/seo-utils'
+import { generateMetadata as generateSEOMetadata, generateTechArticleSchema, cleanExcerpt } from '@/lib/seo-utils'
 
 interface AIToolCategory {
   name: string;
@@ -166,17 +166,11 @@ export default async function ToolPage({ params }: { params: { slug: string } })
     url: toolUrl
   })
 
-  const webPageSchema = generateWebPageSchema(
-    tool.title,
-    cleanDescription,
-    toolUrl
-  )
-
   return (
     <ApolloWrapper>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([techArticleSchema, webPageSchema]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(techArticleSchema) }}
       />
       <div className="min-h-screen bg-black text-white">
         <main className="container mx-auto px-4 py-8 max-w-7xl">
