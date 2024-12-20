@@ -2,23 +2,18 @@ import { ExternalLink, ChevronRight, CheckCircle2 } from 'lucide-react'
 import Link from "next/link"
 import Image from "next/image"
 import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
+import ApolloWrapper from '@/components/ApolloWrapper'
 import { ToolSidebar } from '@/components/tool-sidebar'
 import { PromoteTool } from "@/components/promote-tool"
-import { AdSense } from '@/components/AdSense'
-import { adsenseConfig } from '@/lib/adsense-config'
-import { generateToolSchema } from '@/lib/schema-utils'
-import { Metadata } from 'next'
-import { AITool, AIToolCategory } from '@/types/aiTool'
-
-interface AIToolCategory {
-  name: string;
-  slug: string;
-}
+import { generateMetadata as generateSEOMetadata, generateTechArticleSchema, cleanExcerpt } from '@/lib/seo-utils'
+import { AITool, RelatedTool } from '@/types/aiTool'
 
 async function getAITool(slug: string): Promise<AITool | null> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  const timestamp = Date.now();
   const res = await fetch(
-    `${apiUrl}/api/ai-tools/${slug}`, 
+    `${apiUrl}/api/ai-tools/${slug}?t=${timestamp}`, 
     { cache: 'no-store' }
   )
   if (!res.ok) {
@@ -27,7 +22,7 @@ async function getAITool(slug: string): Promise<AITool | null> {
   return res.json()
 }
 
-async function getRelatedTools(category: string, currentToolSlug: string): Promise<AITool[]> {
+async function getRelatedTools(category: string, currentToolSlug: string): Promise<RelatedTool[]> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
   const res = await fetch(
     `${apiUrl}/api/ai-tools?first=100&category=${encodeURIComponent(category)}`,
@@ -38,8 +33,8 @@ async function getRelatedTools(category: string, currentToolSlug: string): Promi
   }
   const data = await res.json();
   return data.edges
-    .map((edge: { node: AITool }) => edge.node)
-    .filter((tool: AITool) => tool.slug !== currentToolSlug)
+    .map((edge: { node: RelatedTool }) => edge.node)
+    .filter((tool: RelatedTool) => tool.slug !== currentToolSlug)
     .slice(0, 3);
 }
 
@@ -50,26 +45,15 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     return {}
   }
 
-  const cleanDescription = tool.excerpt.replace(/<[^>]*>/g, "")
+  const cleanDescription = cleanExcerpt(tool.excerpt).replace(/<\/?[^>]+(>|$)/g, "")
   const toolUrl = `https://geekdroid.in/tool/${tool.slug}`
 
-  return {
+  return generateSEOMetadata({
     title: tool.title,
     description: cleanDescription,
-    openGraph: {
-      title: tool.title,
-      description: cleanDescription,
-      url: toolUrl,
-      images: [{ url: tool.featuredImage?.node?.sourceUrl || "" }],
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: tool.title,
-      description: cleanDescription,
-      images: [tool.featuredImage?.node?.sourceUrl || ""],
-    },
-  }
+    canonical: toolUrl,
+    ogImage: tool.featuredImage?.node?.sourceUrl
+  })
 }
 
 export default async function ToolPage({ params }: { params: { slug: string } }) {
@@ -81,9 +65,6 @@ export default async function ToolPage({ params }: { params: { slug: string } })
 
   const category = tool.aiToolCategories.nodes[0]?.slug
   const relatedTools = category ? await getRelatedTools(category, tool.slug) : []
-
-  const toolUrl = `https://geekdroid.in/tool/${tool.slug}`
-  const toolSchema = generateToolSchema(tool, toolUrl)
 
   const formatContent = (content: string) => {
     const sections = content.split(/(?=<h[1-6])/);
@@ -136,107 +117,117 @@ export default async function ToolPage({ params }: { params: { slug: string } })
     }
   }
 
+  const toolUrl = `https://geekdroid.in/tool/${tool.slug}`
+  const cleanDescription = cleanExcerpt(tool.excerpt).replace(/<\/?[^>]+(>|$)/g, "")
+
+  const techArticleSchema = generateTechArticleSchema({
+    title: tool.title,
+    description: cleanDescription,
+    image: tool.featuredImage?.node?.sourceUrl || '',
+    datePublished: tool.modifiedGmt,
+    dateModified: tool.modifiedGmt,
+    url: toolUrl
+  })
+
   return (
-    <>
+    <ApolloWrapper>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(toolSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(techArticleSchema) }}
       />
       <div className="min-h-screen bg-black text-white">
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <nav className="flex items-center space-x-2 text-sm mb-4 bg-[#0d1117] rounded-xl border border-[#1d2433] px-4 py-2">
-          <Link href="/" className="text-gray-400 hover:text-white">
-            Home
-          </Link>
-          <ChevronRight className="w-4 h-4 text-gray-600" />
-          {tool.aiToolCategories && tool.aiToolCategories.nodes && tool.aiToolCategories.nodes[0] && (
-            <>
-              <Link href={`/category/${tool.aiToolCategories.nodes[0].slug}`} className="text-gray-400 hover:text-white">
-                {tool.aiToolCategories.nodes[0].name}
-              </Link>
-              <ChevronRight className="w-4 h-4 text-gray-600" />
-            </>
-          )}
-          <span className="text-white">{tool.title}</span>
-        </nav>
+        <main className="container mx-auto px-4 py-8 max-w-7xl">
+          <nav className="flex items-center space-x-2 text-sm mb-4 bg-[#0d1117] rounded-xl border border-[#1d2433] px-4 py-2">
+            <Link href="/" className="text-gray-400 hover:text-white">
+              Home
+            </Link>
+            <ChevronRight className="w-4 h-4 text-gray-600" />
+            {tool.aiToolCategories && tool.aiToolCategories.nodes && tool.aiToolCategories.nodes[0] && (
+              <>
+                <Link href={`/category/${tool.aiToolCategories.nodes[0].slug}`} className="text-gray-400 hover:text-white">
+                  {tool.aiToolCategories.nodes[0].name}
+                </Link>
+                <ChevronRight className="w-4 h-4 text-gray-600" />
+              </>
+            )}
+            <span className="text-white">{tool.title}</span>
+          </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-3 space-y-8">
-            <div className="bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
-              <div className="mb-8">
-                <h1 className="text-4xl font-bold mb-4">{tool.title}</h1>
-                {tool.aiToolCategories && tool.aiToolCategories.nodes && tool.aiToolCategories.nodes[0] && (
-                  <Link 
-                    href={`/category/${tool.aiToolCategories.nodes[0].slug}`}
-                    className="inline-block text-white text-sm font-semibold px-3 py-1 rounded-md transition-colors mb-6 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90"
-                  >
-                    {tool.aiToolCategories.nodes[0].name}
-                  </Link>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="lg:col-span-3 space-y-8">
+              <div className="bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
+                <div className="mb-8">
+                  <h1 className="text-4xl font-bold mb-4">{tool.title}</h1>
+                  {tool.aiToolCategories && tool.aiToolCategories.nodes && tool.aiToolCategories.nodes[0] && (
+                    <Link 
+                      href={`/category/${tool.aiToolCategories.nodes[0].slug}`}
+                      className="inline-block text-white text-sm font-semibold px-3 py-1 rounded-md transition-colors mb-6 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90"
+                    >
+                      {tool.aiToolCategories.nodes[0].name}
+                    </Link>
+                  )}
+
+                  {tool.excerpt && (
+                    <div 
+                      className="text-gray-300 mb-8 text-lg leading-relaxed" 
+                      dangerouslySetInnerHTML={{ __html: cleanExcerpt(tool.excerpt) }} 
+                    />
+                  )}
+
+                  {tool.affiliateLink ? (
+                    <Link 
+                      href={tool.affiliateLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-white shadow hover:bg-primary/90 h-9 px-4 py-2"
+                    >
+                      Explore Website
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Link>
+                  ) : (
+                    <span className="text-gray-400">No affiliate link available</span>
+                  )}
+                </div>
+
+                {tool.featuredImage && tool.featuredImage.node && tool.featuredImage.node.sourceUrl && (
+                  <div className="mb-8 overflow-hidden rounded-xl">
+                    <Image
+                      src={tool.featuredImage.node.sourceUrl}
+                      alt={`${tool.title} Preview`}
+                      width={800}
+                      height={600}
+                      className="w-full"
+                    />
+                  </div>
                 )}
 
-                {tool.excerpt && (
-                  <div 
-                    className="text-gray-300 mb-8 text-lg leading-relaxed" 
-                    dangerouslySetInnerHTML={{ __html: tool.excerpt.replace(/<a\s+[^>]*>Read more<\/a>/i, '').trim() }} 
-                  />
+                {tool.content && (
+                  <div className="prose prose-invert max-w-none">
+                    {formatContent(tool.content)}
+                  </div>
                 )}
 
-                {tool.affiliateLink ? (
-                  <Link 
-                    href={tool.affiliateLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-white shadow hover:bg-primary/90 h-9 px-4 py-2"
-                  >
-                    Explore Website
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Link>
-                ) : (
-                  <span className="text-gray-400">No affiliate link available</span>
+                {tool.modifiedGmt && (
+                  <p className="text-sm text-gray-400 mt-8">
+                    Last updated: {formatDate(tool.modifiedGmt)}
+                  </p>
                 )}
               </div>
 
-              {tool.featuredImage && tool.featuredImage.node && tool.featuredImage.node.sourceUrl && (
-                <div className="mb-8 overflow-hidden rounded-xl">
-                  <Image
-                    src={tool.featuredImage.node.sourceUrl}
-                    alt={`${tool.title} Preview`}
-                    width={800}
-                    height={600}
-                    className="w-full"
-                  />
-                </div>
-              )}
-
-              {tool.content && (
-                <div className="prose prose-invert max-w-none">
-                  {formatContent(tool.content)}
-                </div>
-              )}
-
-              {tool.modifiedGmt && (
-                <p className="text-sm text-gray-400 mt-8">
-                  Last updated: {formatDate(tool.modifiedGmt)}
-                </p>
-              )}
+              <PromoteTool toolName={tool.title} toolSlug={tool.slug} />
             </div>
 
-            <AdSense slot={adsenseConfig.slots.responsive.toolPage} />
-
-            <PromoteTool toolName={tool.title} toolSlug={tool.slug} />
+            <div className="lg:col-span-1">
+              <ToolSidebar 
+                toolName={tool.title} 
+                toolSlug={tool.slug}
+                relatedTools={relatedTools}
+              />
+            </div>
           </div>
-
-          <div className="lg:col-span-1">
-            <ToolSidebar 
-              toolName={tool.title} 
-              toolSlug={tool.slug}
-              relatedTools={relatedTools}
-            />
-          </div>
-        </div>
-      </main>
+        </main>
       </div>
-    </>
+    </ApolloWrapper>
   )
 }
 
