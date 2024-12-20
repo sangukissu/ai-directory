@@ -105,3 +105,38 @@ export function cleanExcerpt(excerpt: string): string {
   return excerpt.replace(/<a\s+[^>]*>Read more<\/a>/i, '').trim();
 }
 
+export function generateCategoryMetadata({ 
+  categoryName, 
+  categoryDescription, 
+  categorySlug 
+}: { 
+  categoryName: string, 
+  categoryDescription: string, 
+  categorySlug: string 
+}): Metadata {
+  const title = `${categoryName} AI Tools | Geekdroid`
+  const description = categoryDescription || `Explore the best ${categoryName} AI tools on Geekdroid. Find and compare top artificial intelligence solutions for ${categoryName.toLowerCase()}.`
+  const canonical = `https://geekdroid.in/category/${categorySlug}`
+
+  return generateMetadata({
+    title,
+    description,
+    canonical,
+  })
+}
+
+export function generateCategorySchema(categoryName: string, categoryDescription: string, categoryUrl: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": `${categoryName} AI Tools`,
+    "description": categoryDescription,
+    "url": categoryUrl,
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Geekdroid",
+      "url": "https://geekdroid.in"
+    }
+  }
+}
+
