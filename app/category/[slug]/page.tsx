@@ -12,7 +12,6 @@ import { ChevronRight } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import Head from 'next/head'
-import { generateCategoryMetadata, generateCategorySchema } from '@/lib/seo-utils'
 
 interface AIToolCategory {
   name: string;
@@ -99,47 +98,15 @@ export default function CategoryPage() {
     loadTools(true);
   }, [slug]);
 
-  const metadata = generateCategoryMetadata({
-    categoryName,
-    categoryDescription,
-    categorySlug: slug as string,
-  });
-
-  const schema = generateCategorySchema(
-    categoryName,
-    categoryDescription,
-    `https://geekdroid.in/category/${slug}`
-  );
+  const pageTitle = `${categoryName} AI Tools | Geekdroid`;
+  const pageDescription = categoryDescription || `Explore the best ${categoryName} AI tools on Geekdroid. Find and compare top artificial intelligence solutions for ${categoryName.toLowerCase()}.`;
 
   if (error) {
     return (
       <ApolloWrapper>
         <Head>
-          <title>{metadata.title as string}</title>
-          <meta name="description" content={metadata.description as string} />
-          <meta property="og:title" content={metadata.openGraph?.title as string} />
-          <meta property="og:description" content={metadata.openGraph?.description as string} />
-          <meta property="og:url" content={metadata.openGraph?.url as string} />
-          <meta property="og:site_name" content={metadata.openGraph?.siteName as string} />
-          <meta property="og:image" content={
-            Array.isArray(metadata.openGraph?.images) 
-              ? metadata.openGraph.images[0]?.url 
-              : typeof metadata.openGraph?.images === 'object' 
-                ? metadata.openGraph.images.url 
-                : ''
-          } />
-          <meta name="twitter:card" content={metadata.twitter?.card as string} />
-          <meta name="twitter:title" content={metadata.twitter?.title as string} />
-          <meta name="twitter:description" content={metadata.twitter?.description as string} />
-          <meta name="twitter:image" content={
-            Array.isArray(metadata.openGraph?.images) 
-              ? metadata.openGraph.images[0]?.url 
-              : typeof metadata.openGraph?.images === 'object' 
-                ? metadata.openGraph.images.url 
-                : ''
-          } />
-          <link rel="canonical" href={metadata.alternates?.canonical as string} />
-          <script type="application/ld+json">{JSON.stringify(schema)}</script>
+          <title>{pageTitle}</title>
+          <meta name="description" content={pageDescription} />
         </Head>
         <div className="min-h-screen bg-black">
           <main className="container mx-auto px-4 py-8 max-w-7xl">
@@ -165,31 +132,8 @@ export default function CategoryPage() {
   return (
     <ApolloWrapper>
       <Head>
-        <title>{metadata.title as string}</title>
-        <meta name="description" content={metadata.description as string} />
-        <meta property="og:title" content={metadata.openGraph?.title as string} />
-        <meta property="og:description" content={metadata.openGraph?.description as string} />
-        <meta property="og:url" content={metadata.openGraph?.url as string} />
-        <meta property="og:site_name" content={metadata.openGraph?.siteName as string} />
-        <meta property="og:image" content={
-          Array.isArray(metadata.openGraph?.images) 
-            ? metadata.openGraph.images[0]?.url 
-            : typeof metadata.openGraph?.images === 'object' 
-              ? metadata.openGraph.images.url 
-              : ''
-        } />
-        <meta name="twitter:card" content={metadata.twitter?.card as string} />
-        <meta name="twitter:title" content={metadata.twitter?.title as string} />
-        <meta name="twitter:description" content={metadata.twitter?.description as string} />
-        <meta name="twitter:image" content={
-          Array.isArray(metadata.openGraph?.images) 
-            ? metadata.openGraph.images[0]?.url 
-            : typeof metadata.openGraph?.images === 'object' 
-              ? metadata.openGraph.images.url 
-              : ''
-        } />
-        <link rel="canonical" href={metadata.alternates?.canonical as string} />
-        <script type="application/ld+json">{JSON.stringify(schema)}</script>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
       </Head>
       <div className="min-h-screen bg-black">
         <main className="container mx-auto px-4 py-8 max-w-7xl">
