@@ -120,7 +120,6 @@ export default function CategoryPage() {
           <meta property="og:title" content={metadata.openGraph?.title as string} />
           <meta property="og:description" content={metadata.openGraph?.description as string} />
           <meta property="og:url" content={metadata.openGraph?.url as string} />
-          <meta property="og:type" content={metadata.openGraph?.type as string} />
           <meta property="og:site_name" content={metadata.openGraph?.siteName as string} />
           <meta property="og:image" content={metadata.openGraph?.images?.[0].url as string} />
           <meta name="twitter:card" content={metadata.twitter?.card as string} />
@@ -159,7 +158,6 @@ export default function CategoryPage() {
         <meta property="og:title" content={metadata.openGraph?.title as string} />
         <meta property="og:description" content={metadata.openGraph?.description as string} />
         <meta property="og:url" content={metadata.openGraph?.url as string} />
-        <meta property="og:type" content={metadata.openGraph?.type as string} />
         <meta property="og:site_name" content={metadata.openGraph?.siteName as string} />
         <meta property="og:image" content={metadata.openGraph?.images?.[0].url as string} />
         <meta name="twitter:card" content={metadata.twitter?.card as string} />
