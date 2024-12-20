@@ -66,6 +66,41 @@ export function generateWebPageSchema(title: string, description: string, url: s
   }
 }
 
+export function generateTechArticleSchema(tool: {
+  title: string;
+  description: string;
+  image: string;
+  datePublished: string;
+  dateModified: string;
+  url: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": tool.title,
+    "description": tool.description,
+    "image": tool.image,
+    "datePublished": tool.datePublished,
+    "dateModified": tool.dateModified,
+    "author": {
+      "@type": "Organization",
+      "name": "Geekdroid"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Geekdroid",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://geekdroid.in/logo.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": tool.url
+    }
+  }
+}
+
 export function cleanExcerpt(excerpt: string): string {
   return excerpt.replace(/<a\s+[^>]*>Read more<\/a>/i, '').trim();
 }
