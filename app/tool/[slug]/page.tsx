@@ -8,7 +8,8 @@ import { notFound } from 'next/navigation'
 import { ToolSidebar } from '@/components/tool-sidebar'
 import { PromoteTool } from "@/components/promote-tool"
 import { Metadata } from 'next'
-import { generateMetadata as generateSEOMetadata, generateTechArticleSchema, cleanExcerpt, WebSiteSchema } from '@/lib/seo-utils'
+import { generateMetadata as generateSEOMetadata, generateTechArticleSchema, cleanExcerpt } from '@/lib/seo-utils'
+import { WebSiteSchema } from '@/components/WebSiteSchema'
 import { AdSense } from '@/components/AdSense'
 import { adsenseConfig } from '@/lib/adsense-config'
 
