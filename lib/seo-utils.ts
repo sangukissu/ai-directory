@@ -113,7 +113,7 @@ export function cleanExcerpt(excerpt: string): string {
   return excerpt.replace(/<a\s+[^>]*>Read more<\/a>/i, '').trim();
 }
 
-export function WebSiteSchema() {
+export function WebSiteSchema(): JSX.Element {
   return (
     <script
       type="application/ld+json"
