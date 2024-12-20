@@ -45,13 +45,6 @@ interface AIToolsResponse {
   edges: AIToolEdge[];
 }
 
-async function getCategoryInfo(slug: string): Promise<AIToolCategory | null> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-  const res = await fetch(`${apiUrl}/api/categories/${slug}`, { cache: 'no-store' });
-  if (!res.ok) return null;
-  return res.json();
-}
-
 async function getToolsByCategory(categorySlug: string, first: number = 20, after: string | null = null): Promise<AIToolsResponse> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
   const url = new URL(`${apiUrl}/api/ai-tools`);
@@ -78,28 +71,32 @@ export default function CategoryPage() {
   const [error, setError] = useState<Error | null>(null);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [endCursor, setEndCursor] = useState<string | null>(null);
-  const [category, setCategory] = useState<AIToolCategory | null>(null);
+  const [categoryName, setCategoryName] = useState('');
 
   useEffect(() => {
-    const fetchCategoryAndTools = async () => {
+    const fetchTools = async () => {
       setLoading(true);
       try {
-        const categoryInfo = await getCategoryInfo(slug as string);
-        setCategory(categoryInfo);
-
         const data = await getToolsByCategory(slug as string, 20);
         setTools(data.edges.map(edge => edge.node));
         setHasNextPage(data.pageInfo.hasNextPage);
         setEndCursor(data.pageInfo.endCursor);
+        
+        // Set category name from the first tool's category
+        if (data.edges.length > 0) {
+          const firstTool = data.edges[0].node;
+          const category = firstTool.aiToolCategories.nodes.find(cat => cat.slug === slug);
+          setCategoryName(category?.name || (slug as string));
+        }
       } catch (e) {
-        console.error('Error loading category or tools:', e);
+        console.error('Error loading tools:', e);
         setError(e instanceof Error ? e : new Error('An unknown error occurred'));
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCategoryAndTools();
+    fetchTools();
   }, [slug]);
 
   const loadMoreTools = async () => {
@@ -117,22 +114,18 @@ export default function CategoryPage() {
     }
   };
 
-  const generateDescription = (category: AIToolCategory | null, toolCount: number): string => {
-    if (!category) {
-      return `Explore AI tools in this category on Geekdroid. Find and compare top artificial intelligence solutions.`;
-    }
-
+  const generateDescription = (categoryName: string, toolCount: number): string => {
     const descriptions = [
-      `Discover ${toolCount}+ cutting-edge ${category.name} AI tools on Geekdroid. Enhance your workflow with top-rated artificial intelligence solutions.`,
-      `Explore a curated collection of ${toolCount}+ ${category.name} AI tools. Find the perfect AI solution to streamline your tasks and boost productivity.`,
-      `Browse our selection of ${toolCount}+ innovative ${category.name} AI tools. Compare features and find the ideal AI solution for your needs.`
+      `Discover ${toolCount}+ cutting-edge ${categoryName} AI tools on Geekdroid. Enhance your workflow with top-rated artificial intelligence solutions.`,
+      `Explore a curated collection of ${toolCount}+ ${categoryName} AI tools. Find the perfect AI solution to streamline your tasks and boost productivity.`,
+      `Browse our selection of ${toolCount}+ innovative ${categoryName} AI tools. Compare features and find the ideal AI solution for your needs.`
     ];
 
     return descriptions[Math.floor(Math.random() * descriptions.length)];
   };
 
-  const pageTitle = category ? `${category.name} AI Tools | Geekdroid` : 'AI Tools Category | Geekdroid';
-  const pageDescription = generateDescription(category, tools.length);
+  const pageTitle = `${categoryName} AI Tools | Geekdroid`;
+  const pageDescription = generateDescription(categoryName, tools.length);
 
   if (error) {
     return (
@@ -175,11 +168,11 @@ export default function CategoryPage() {
               Home
             </Link>
             <ChevronRight className="w-4 h-4 text-gray-600" />
-            <span className="text-white">{category?.name || 'Category'}</span>
+            <span className="text-white">{categoryName || 'Category'}</span>
           </nav>
           
           <div className="mx-auto bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
-            <h1 className="text-3xl font-bold text-white mb-8">{category?.name || 'Category'} AI Tools</h1>
+            <h1 className="text-3xl font-bold text-white mb-8">{categoryName || 'Category'} AI Tools</h1>
             
             {tools.length === 0 && !loading ? (
               <Alert className="bg-yellow-900 border-yellow-800">
@@ -197,7 +190,7 @@ export default function CategoryPage() {
                     <ToolCard
                       key={tool.id}
                       title={tool.title}
-                      category={tool.aiToolCategories.nodes[0]?.name || category?.name || 'AI Tool'}
+                      category={tool.aiToolCategories.nodes[0]?.name || categoryName || 'AI Tool'}
                       slug={tool.slug}
                       previewImage={tool.featuredImage?.node?.sourceUrl || "/placeholder.svg"}
                       logo={tool.featuredImage?.node?.sourceUrl || "/placeholder.svg"}
