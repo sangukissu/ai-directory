@@ -3,32 +3,31 @@ import { Inter } from 'next/font/google'
 import { SiteNav } from '@/components/site-nav'
 import { Footer } from '@/components/footer'
 import { Metadata } from 'next'
-import { generateWebSiteSchema } from '@/lib/seo-utils'
+import { generateMetadata, generateWebSiteSchema } from '@/lib/seo-utils'
 import { adsenseConfig } from '@/lib/adsense-config'
 import Script from 'next/script'
-import { WebSiteSchema } from '@/components/WebSiteSchema'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  title: {
-    default: 'Geekdroid | AI Tools Directory',
-    template: '%s | Geekdroid'
-  },
-  description: 'Discover and compare the best AI tools for your business',
-}
+export const metadata: Metadata = generateMetadata({
+  title: "Geekdroid | AI Tools Directory",
+  description: "Discover and compare the best AI tools for your business",
+  canonical: "https://geekdroid.in"
+})
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const webSiteSchema = generateWebSiteSchema()
+
   return (
     <html lang="en">
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(generateWebSiteSchema()) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema) }}
         />
         {adsenseConfig.enabled && (
           <Script
@@ -47,7 +46,6 @@ export default function RootLayout({
           </main>
           <Footer />
         </div>
-        <WebSiteSchema />
       </body>
     </html>
   )
