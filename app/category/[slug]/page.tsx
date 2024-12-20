@@ -11,6 +11,8 @@ import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
+import Head from 'next/head'
+import { generateCategoryMetadata, generateCategorySchema } from '@/lib/seo-utils'
 
 interface AIToolCategory {
   name: string;
@@ -30,10 +32,10 @@ interface AITool {
       sourceUrl: string;
     };
   };
-  toolUrl: string;
-  pricingModel: string;
-  rating: number;
-  affiliateLink: string;
+}
+
+interface AIToolEdge {
+  node: AITool;
 }
 
 interface AIToolsResponse {
@@ -41,9 +43,7 @@ interface AIToolsResponse {
     hasNextPage: boolean;
     endCursor: string;
   };
-  edges: {
-    node: AITool;
-  }[];
+  edges: AIToolEdge[];
 }
 
 async function getToolsByCategory(categorySlug: string, first: number = 20, after: string | null = null): Promise<AIToolsResponse> {
@@ -73,6 +73,7 @@ export default function CategoryPage() {
   const [hasNextPage, setHasNextPage] = useState(true);
   const [endCursor, setEndCursor] = useState<string | null>(null);
   const [categoryName, setCategoryName] = useState(slug as string);
+  const [categoryDescription, setCategoryDescription] = useState('');
 
   const loadTools = async (isInitial: boolean = false) => {
     setLoading(true);
@@ -82,9 +83,12 @@ export default function CategoryPage() {
       setHasNextPage(data.pageInfo.hasNextPage);
       setEndCursor(data.pageInfo.endCursor);
       if (isInitial && data.edges.length > 0) {
-        setCategoryName(data.edges[0].node.aiToolCategories.nodes[0]?.name || slug as string);
+        const category = data.edges[0].node.aiToolCategories.nodes[0];
+        setCategoryName(category?.name || slug as string);
+        setCategoryDescription(`Explore the best ${category?.name || slug as string} AI tools on Geekdroid.`);
       }
     } catch (e) {
+      console.error('Error loading tools:', e);
       setError(e instanceof Error ? e : new Error('An unknown error occurred'));
     } finally {
       setLoading(false);
@@ -95,26 +99,76 @@ export default function CategoryPage() {
     loadTools(true);
   }, [slug]);
 
+  const metadata = generateCategoryMetadata({
+    categoryName,
+    categoryDescription,
+    categorySlug: slug as string,
+  });
+
+  const schema = generateCategorySchema(
+    categoryName,
+    categoryDescription,
+    `https://geekdroid.in/category/${slug}`
+  );
+
   if (error) {
     return (
-      <Alert variant="destructive" className="bg-red-900 border-red-800">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Error Loading AI Tools</AlertTitle>
-        <AlertDescription>
-          We're sorry, but there was an error loading the AI tools. Please try again later.
-          {process.env.NODE_ENV === 'development' && (
-            <div className="mt-2 text-sm opacity-75">
-              Error details: {error.message}
-            </div>
-          )}
-        </AlertDescription>
-        <TryAgainButton />
-      </Alert>
+      <ApolloWrapper>
+        <Head>
+          <title>{metadata.title as string}</title>
+          <meta name="description" content={metadata.description as string} />
+          <meta property="og:title" content={metadata.openGraph?.title as string} />
+          <meta property="og:description" content={metadata.openGraph?.description as string} />
+          <meta property="og:url" content={metadata.openGraph?.url as string} />
+          <meta property="og:type" content={metadata.openGraph?.type as string} />
+          <meta property="og:site_name" content={metadata.openGraph?.siteName as string} />
+          <meta property="og:image" content={metadata.openGraph?.images?.[0].url as string} />
+          <meta name="twitter:card" content={metadata.twitter?.card as string} />
+          <meta name="twitter:title" content={metadata.twitter?.title as string} />
+          <meta name="twitter:description" content={metadata.twitter?.description as string} />
+          <meta name="twitter:image" content={metadata.twitter?.images?.[0] as string} />
+          <link rel="canonical" href={metadata.alternates?.canonical as string} />
+          <script type="application/ld+json">{JSON.stringify(schema)}</script>
+        </Head>
+        <div className="min-h-screen bg-black">
+          <main className="container mx-auto px-4 py-8 max-w-7xl">
+            <Alert variant="destructive" className="bg-red-900 border-red-800">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error Loading AI Tools</AlertTitle>
+              <AlertDescription>
+                We're sorry, but there was an error loading the AI tools. Please try again later.
+                {process.env.NODE_ENV === 'development' && (
+                  <div className="mt-2 text-sm opacity-75">
+                    Error details: {error.message}
+                  </div>
+                )}
+              </AlertDescription>
+              <TryAgainButton />
+            </Alert>
+          </main>
+        </div>
+      </ApolloWrapper>
     );
   }
 
   return (
     <ApolloWrapper>
+      <Head>
+        <title>{metadata.title as string}</title>
+        <meta name="description" content={metadata.description as string} />
+        <meta property="og:title" content={metadata.openGraph?.title as string} />
+        <meta property="og:description" content={metadata.openGraph?.description as string} />
+        <meta property="og:url" content={metadata.openGraph?.url as string} />
+        <meta property="og:type" content={metadata.openGraph?.type as string} />
+        <meta property="og:site_name" content={metadata.openGraph?.siteName as string} />
+        <meta property="og:image" content={metadata.openGraph?.images?.[0].url as string} />
+        <meta name="twitter:card" content={metadata.twitter?.card as string} />
+        <meta name="twitter:title" content={metadata.twitter?.title as string} />
+        <meta name="twitter:description" content={metadata.twitter?.description as string} />
+        <meta name="twitter:image" content={metadata.twitter?.images?.[0] as string} />
+        <link rel="canonical" href={metadata.alternates?.canonical as string} />
+        <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      </Head>
       <div className="min-h-screen bg-black">
         <main className="container mx-auto px-4 py-8 max-w-7xl">
           <nav className="flex items-center space-x-2 text-sm mb-4 bg-[#0d1117] rounded-xl border border-[#1d2433] px-4 py-2">
