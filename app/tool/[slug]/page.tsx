@@ -8,29 +8,11 @@ import { AdSense } from '@/components/AdSense'
 import { adsenseConfig } from '@/lib/adsense-config'
 import { generateToolSchema } from '@/lib/schema-utils'
 import { Metadata } from 'next'
-import { AITool } from '@/types/aiTool'
+import { AITool, AIToolCategory } from '@/types/aiTool'
 
 interface AIToolCategory {
   name: string;
   slug: string;
-}
-
-interface AITool {
-  id: string;
-  title: string;
-  content: string;
-  excerpt: string;
-  slug: string;
-  aiToolCategories: {
-    nodes: AIToolCategory[];
-  };
-  featuredImage: {
-    node: {
-      sourceUrl: string;
-    };
-  };
-  affiliateLink?: string;
-  modifiedGmt: string;
 }
 
 async function getAITool(slug: string): Promise<AITool | null> {
