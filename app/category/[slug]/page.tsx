@@ -121,11 +121,23 @@ export default function CategoryPage() {
           <meta property="og:description" content={metadata.openGraph?.description as string} />
           <meta property="og:url" content={metadata.openGraph?.url as string} />
           <meta property="og:site_name" content={metadata.openGraph?.siteName as string} />
-          <meta property="og:image" content={Array.isArray(metadata.openGraph?.images) ? metadata.openGraph.images[0]?.url : metadata.openGraph?.images?.url || ''} />
+          <meta property="og:image" content={
+            Array.isArray(metadata.openGraph?.images) 
+              ? metadata.openGraph.images[0]?.url 
+              : typeof metadata.openGraph?.images === 'object' 
+                ? metadata.openGraph.images.url 
+                : ''
+          } />
           <meta name="twitter:card" content={metadata.twitter?.card as string} />
           <meta name="twitter:title" content={metadata.twitter?.title as string} />
           <meta name="twitter:description" content={metadata.twitter?.description as string} />
-          <meta name="twitter:image" content={Array.isArray(metadata.openGraph?.images) ? metadata.openGraph.images[0]?.url : metadata.openGraph?.images?.url || ''} />
+          <meta name="twitter:image" content={
+            Array.isArray(metadata.openGraph?.images) 
+              ? metadata.openGraph.images[0]?.url 
+              : typeof metadata.openGraph?.images === 'object' 
+                ? metadata.openGraph.images.url 
+                : ''
+          } />
           <link rel="canonical" href={metadata.alternates?.canonical as string} />
           <script type="application/ld+json">{JSON.stringify(schema)}</script>
         </Head>
@@ -159,11 +171,23 @@ export default function CategoryPage() {
         <meta property="og:description" content={metadata.openGraph?.description as string} />
         <meta property="og:url" content={metadata.openGraph?.url as string} />
         <meta property="og:site_name" content={metadata.openGraph?.siteName as string} />
-        <meta property="og:image" content={Array.isArray(metadata.openGraph?.images) ? metadata.openGraph.images[0]?.url : metadata.openGraph?.images?.url || ''} />
+        <meta property="og:image" content={
+          Array.isArray(metadata.openGraph?.images) 
+            ? metadata.openGraph.images[0]?.url 
+            : typeof metadata.openGraph?.images === 'object' 
+              ? metadata.openGraph.images.url 
+              : ''
+        } />
         <meta name="twitter:card" content={metadata.twitter?.card as string} />
         <meta name="twitter:title" content={metadata.twitter?.title as string} />
         <meta name="twitter:description" content={metadata.twitter?.description as string} />
-        <meta name="twitter:image" content={Array.isArray(metadata.openGraph?.images) ? metadata.openGraph.images[0]?.url : metadata.openGraph?.images?.url || ''} />
+        <meta name="twitter:image" content={
+          Array.isArray(metadata.openGraph?.images) 
+            ? metadata.openGraph.images[0]?.url 
+            : typeof metadata.openGraph?.images === 'object' 
+              ? metadata.openGraph.images.url 
+              : ''
+        } />
         <link rel="canonical" href={metadata.alternates?.canonical as string} />
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Head>
