@@ -113,25 +113,3 @@ export function cleanExcerpt(excerpt: string): string {
   return excerpt.replace(/<a\s+[^>]*>Read more<\/a>/i, '').trim();
 }
 
-export function WebSiteSchema(): JSX.Element {
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          "name": "Geekdroid",
-          "url": "https://geekdroid.in",
-          "description": "Discover and compare the best AI tools for your needs",
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://geekdroid.in/search?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-          }
-        })
-      }}
-    />
-  )
-}
-
