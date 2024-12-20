@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button"
 import { ExternalLink, ChevronRight } from 'lucide-react'
 import { CheckCircle2 } from 'lucide-react'
 import Link from "next/link"
@@ -7,7 +8,9 @@ import { notFound } from 'next/navigation'
 import { ToolSidebar } from '@/components/tool-sidebar'
 import { PromoteTool } from "@/components/promote-tool"
 import { Metadata } from 'next'
-import { generateMetadata as generateSEOMetadata, generateTechArticleSchema, cleanExcerpt } from '@/lib/seo-utils'
+import { generateMetadata as generateSEOMetadata, generateTechArticleSchema, cleanExcerpt, WebSiteSchema } from '@/lib/seo-utils'
+import { AdSense } from '@/components/AdSense'
+import { adsenseConfig } from '@/lib/adsense-config'
 
 interface AIToolCategory {
   name: string;
@@ -48,10 +51,12 @@ interface RelatedTool {
 
 async function getAITool(slug: string): Promise<AITool | null> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-  const timestamp = Date.now();
   const res = await fetch(
-    `${apiUrl}/api/ai-tools/${slug}?t=${timestamp}`, 
-    { cache: 'no-store' }
+    `${apiUrl}/api/ai-tools/${slug}`, 
+    { 
+      cache: 'no-store',
+      next: { revalidate: 0 }
+    }
   )
   if (!res.ok) {
     return null
@@ -63,7 +68,10 @@ async function getRelatedTools(category: string, currentToolSlug: string): Promi
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
   const res = await fetch(
     `${apiUrl}/api/ai-tools?first=100&category=${encodeURIComponent(category)}`,
-    { cache: 'no-store' }
+    { 
+      cache: 'no-store',
+      next: { revalidate: 0 }
+    }
   );
   if (!res.ok) {
     throw new Error(`Failed to fetch AI Tools: ${res.status} ${res.statusText}`);
@@ -85,11 +93,21 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const cleanDescription = cleanExcerpt(tool.excerpt).replace(/<\/?[^>]+(>|$)/g, "")
   const toolUrl = `https://geekdroid.in/tool/${tool.slug}`
 
+  const techArticleSchema = generateTechArticleSchema({
+    title: tool.title,
+    description: cleanDescription,
+    image: tool.featuredImage?.node?.sourceUrl || '',
+    datePublished: tool.modifiedGmt,
+    dateModified: tool.modifiedGmt,
+    url: toolUrl
+  })
+
   return generateSEOMetadata({
     title: tool.title,
     description: cleanDescription,
     canonical: toolUrl,
-    ogImage: tool.featuredImage?.node?.sourceUrl
+    ogImage: tool.featuredImage?.node?.sourceUrl,
+    techArticleSchema
   })
 }
 
@@ -168,10 +186,13 @@ export default async function ToolPage({ params }: { params: { slug: string } })
 
   return (
     <ApolloWrapper>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(techArticleSchema) }}
-      />
+      <WebSiteSchema />
+      {techArticleSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(techArticleSchema) }}
+        />
+      )}
       <div className="min-h-screen bg-black text-white">
         <main className="container mx-auto px-4 py-8 max-w-7xl">
           <nav className="flex items-center space-x-2 text-sm mb-4 bg-[#0d1117] rounded-xl border border-[#1d2433] px-4 py-2">
@@ -251,6 +272,9 @@ export default async function ToolPage({ params }: { params: { slug: string } })
                 )}
               </div>
 
+              <AdSense slot={adsenseConfig.slots.responsive.toolPage} />
+
+              {/* Add the promote section */}
               <PromoteTool toolName={tool.title} toolSlug={tool.slug} />
             </div>
 
