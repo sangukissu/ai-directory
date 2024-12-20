@@ -51,21 +51,6 @@ export function generateWebSiteSchema() {
   }
 }
 
-export function generateWebPageSchema(title: string, description: string, url: string) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": title,
-    "description": description,
-    "url": url,
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "Geekdroid",
-      "url": "https://geekdroid.in"
-    }
-  }
-}
-
 export function generateTechArticleSchema(tool: {
   title: string;
   description: string;
@@ -117,6 +102,7 @@ export function generateCategoryMetadata({
   const title = `${categoryName} AI Tools | Geekdroid`
   const description = categoryDescription || `Explore the best ${categoryName} AI tools on Geekdroid. Find and compare top artificial intelligence solutions for ${categoryName.toLowerCase()}.`
   const canonical = `https://geekdroid.in/category/${categorySlug}`
+  const siteUrl = "https://geekdroid.in"
 
   return generateMetadata({
     title,
