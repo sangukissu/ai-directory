@@ -1,13 +1,50 @@
-import { ExternalLink, ChevronRight, CheckCircle2 } from 'lucide-react'
+import { ExternalLink, ChevronRight } from 'lucide-react'
+import { CheckCircle2 } from 'lucide-react'
 import Link from "next/link"
 import Image from "next/image"
-import { notFound } from 'next/navigation'
-import { Metadata } from 'next'
 import ApolloWrapper from '@/components/ApolloWrapper'
+import { notFound } from 'next/navigation'
 import { ToolSidebar } from '@/components/tool-sidebar'
 import { PromoteTool } from "@/components/promote-tool"
-import { generateMetadata as generateSEOMetadata, generateTechArticleSchema, cleanExcerpt } from '@/lib/seo-utils'
-import { AITool, RelatedTool } from '@/types/aiTool'
+import { Metadata } from 'next'
+import { generateMetadata as generateSEOMetadata, generateTechArticleSchema, generateWebPageSchema, cleanExcerpt } from '@/lib/seo-utils'
+
+interface AIToolCategory {
+  name: string;
+  slug: string;
+}
+
+interface AITool {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  slug: string;
+  aiToolCategories: {
+    nodes: AIToolCategory[];
+  };
+  featuredImage: {
+    node: {
+      sourceUrl: string;
+    };
+  };
+  affiliateLink?: string;
+  modifiedGmt: string;
+}
+
+interface RelatedTool {
+  id: string;
+  title: string;
+  slug: string;
+  featuredImage: {
+    node: {
+      sourceUrl: string;
+    };
+  };
+  aiToolCategories: {
+    nodes: AIToolCategory[];
+  };
+}
 
 async function getAITool(slug: string): Promise<AITool | null> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -22,7 +59,7 @@ async function getAITool(slug: string): Promise<AITool | null> {
   return res.json()
 }
 
-async function getRelatedTools(category: string, currentToolSlug: string): Promise<RelatedTool[]> {
+async function getRelatedTools(category: string, currentToolSlug: string): Promise<AITool[]> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
   const res = await fetch(
     `${apiUrl}/api/ai-tools?first=100&category=${encodeURIComponent(category)}`,
@@ -33,8 +70,8 @@ async function getRelatedTools(category: string, currentToolSlug: string): Promi
   }
   const data = await res.json();
   return data.edges
-    .map((edge: { node: RelatedTool }) => edge.node)
-    .filter((tool: RelatedTool) => tool.slug !== currentToolSlug)
+    .map((edge: { node: AITool }) => edge.node)
+    .filter((tool: AITool) => tool.slug !== currentToolSlug)
     .slice(0, 3);
 }
 
@@ -129,11 +166,17 @@ export default async function ToolPage({ params }: { params: { slug: string } })
     url: toolUrl
   })
 
+  const webPageSchema = generateWebPageSchema(
+    tool.title,
+    cleanDescription,
+    toolUrl
+  )
+
   return (
     <ApolloWrapper>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(techArticleSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([techArticleSchema, webPageSchema]) }}
       />
       <div className="min-h-screen bg-black text-white">
         <main className="container mx-auto px-4 py-8 max-w-7xl">
