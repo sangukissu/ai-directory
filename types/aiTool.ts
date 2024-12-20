@@ -1,22 +1,23 @@
 export interface AIToolCategory {
-    name: string;
-  }
-  
-  export interface FeaturedImage {
+  name: string;
+  slug: string;
+}
+
+export interface AITool {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  slug: string;
+  aiToolCategories: {
+    nodes: AIToolCategory[];
+  };
+  featuredImage: {
     node: {
       sourceUrl: string;
     };
-  }
-  
-  export interface AITool {
-    id: string;
-    title: string;
-    excerpt: string;
-    content?: string;
-    aiToolCategories: {
-      nodes: AIToolCategory[];
-    };
-    featuredImage: FeaturedImage;
-  }
-  
-  
+  };
+  affiliateLink?: string;
+  modifiedGmt: string;
+}
+
