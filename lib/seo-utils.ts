@@ -5,10 +5,9 @@ export interface SEOProps {
   description: string
   canonical?: string
   ogImage?: string
-  techArticleSchema?: any
 }
 
-export function generateMetadata({ title, description, canonical, ogImage, techArticleSchema }: SEOProps): Metadata {
+export function generateMetadata({ title, description, canonical, ogImage }: SEOProps): Metadata {
   const siteName = "Geekdroid"
   const siteUrl = "https://geekdroid.in"
   
@@ -32,13 +31,6 @@ export function generateMetadata({ title, description, canonical, ogImage, techA
     alternates: {
       canonical: canonical || siteUrl,
     },
-  }
-
-  if (techArticleSchema) {
-    metadata.other = {
-      ...metadata.other,
-      'tech-article-schema': JSON.stringify(techArticleSchema),
-    }
   }
 
   return metadata
@@ -70,41 +62,6 @@ export function generateWebPageSchema(title: string, description: string, url: s
       "@type": "WebSite",
       "name": "Geekdroid",
       "url": "https://geekdroid.in"
-    }
-  }
-}
-
-export function generateTechArticleSchema(tool: {
-  title: string;
-  description: string;
-  image: string;
-  datePublished: string;
-  dateModified: string;
-  url: string;
-}) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": tool.title,
-    "description": tool.description,
-    "image": tool.image,
-    "datePublished": tool.datePublished,
-    "dateModified": tool.dateModified,
-    "author": {
-      "@type": "Organization",
-      "name": "Geekdroid"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Geekdroid",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://geekdroid.in/logo.png"
-      }
-    },
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": tool.url
     }
   }
 }
