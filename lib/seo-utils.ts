@@ -113,8 +113,6 @@ export function cleanExcerpt(excerpt: string): string {
   return excerpt.replace(/<a\s+[^>]*>Read more<\/a>/i, '').trim();
 }
 
-import React from 'react'
-
 export function WebSiteSchema() {
   return (
     <script
