@@ -1,3 +1,5 @@
+// app/tool/[slug]/page.tsx
+
 import { ExternalLink, ChevronRight } from 'lucide-react'
 import { CheckCircle2 } from 'lucide-react'
 import Link from "next/link"
@@ -8,6 +10,8 @@ import { ToolSidebar } from '@/components/tool-sidebar'
 import { PromoteTool } from "@/components/promote-tool"
 import { Metadata } from 'next'
 import { generateMetadata as generateSEOMetadata, generateTechArticleSchema, cleanExcerpt } from '@/lib/seo-utils'
+import React from 'react';
+import { BookmarkButton } from '@/components/BookmarkButton'
 
 interface AIToolCategory {
   name: string;
@@ -50,13 +54,17 @@ async function getAITool(slug: string): Promise<AITool | null> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
   const timestamp = Date.now();
   const res = await fetch(
-    `${apiUrl}/api/ai-tools/${slug}?t=${timestamp}`, 
+    `${apiUrl}/api/ai-tools/${encodeURIComponent(slug)}?t=${timestamp}`, 
     { cache: 'no-store' }
   )
   if (!res.ok) {
     return null
   }
-  return res.json()
+  const data = await res.json()
+  return {
+    ...data,
+    slug: data.slug || slug // Ensure we always have a slug
+  }
 }
 
 async function getRelatedTools(category: string, currentToolSlug: string): Promise<AITool[]> {
@@ -125,6 +133,46 @@ export default async function ToolPage({ params }: { params: { slug: string } })
               </ul>
             </div>
           );
+        }
+      } else if (section.includes('<ol>')) {
+        const listItems = section.match(/<li>(.*?)<\/li>/g);
+        if (listItems) {
+          return (
+            <div key={index}>
+              <ol className="space-y-4 my-4 list-decimal list-inside">
+                {listItems.map((item, i) => {
+                  const content = item.replace(/<li>|<\/li>/g, '');
+                  return (
+                    <li key={i} className="pl-2">
+                      <span dangerouslySetInnerHTML={{ __html: content }} />
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          );
+        }
+      } else if (section.includes('<dl>')) {
+        const dlContent = section.match(/<dl>(.*?)<\/dl>/s);
+        if (dlContent) {
+          const dtItems = dlContent[1].match(/<dt>(.*?)<\/dt>/g);
+          const ddItems = dlContent[1].match(/<dd>(.*?)<\/dd>/g);
+          if (dtItems && ddItems) {
+            return (
+              <div key={index} className="grid grid-cols-[200px,1fr] gap-4 my-6">
+                {dtItems.map((dt, i) => {
+                  const dtContent = dt.replace(/<dt>|<\/dt>/g, '');
+                  const ddContent = ddItems[i].replace(/<dd>|<\/dd>/g, '');
+                  return (
+                    <React.Fragment key={i}>
+                      <div className="font-semibold text-white">{dtContent}</div>
+                      <div className="text-gray-300">{ddContent}</div>
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            );
+          }
         }
       }
 
@@ -211,19 +259,22 @@ export default async function ToolPage({ params }: { params: { slug: string } })
                     />
                   )}
 
-                  {tool.affiliateLink ? (
-                    <Link 
-                      href={tool.affiliateLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-white shadow hover:bg-primary/90 h-9 px-4 py-2"
-                    >
-                      Explore Website
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </Link>
-                  ) : (
-                    <span className="text-gray-400">No affiliate link available</span>
-                  )}
+                  <div className="flex items-center space-x-4">
+                    {tool.affiliateLink ? (
+                      <Link 
+                        href={tool.affiliateLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-white shadow hover:bg-primary/90 h-9 px-4 py-2"
+                      >
+                        Explore Website
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </Link>
+                    ) : (
+                      <span className="text-gray-400">No affiliate link available</span>
+                    )}
+                    <BookmarkButton toolSlug={tool.slug} toolName={tool.title} />
+                  </div>
                 </div>
 
                 {tool.featuredImage && tool.featuredImage.node && tool.featuredImage.node.sourceUrl && (
@@ -239,7 +290,7 @@ export default async function ToolPage({ params }: { params: { slug: string } })
                 )}
 
                 {tool.content && (
-                  <div className="prose prose-invert max-w-none">
+                  <div className="prose prose-invert max-w-none prose-headings:text-white prose-p:text-gray-300 prose-strong:text-white prose-ul:list-none prose-ol:list-decimal prose-ol:list-inside">
                     {formatContent(tool.content)}
                   </div>
                 )}
