@@ -21,3 +21,17 @@ export interface AITool {
   modifiedGmt: string;
 }
 
+export interface RelatedTool {
+  id: string;
+  title: string;
+  slug: string;
+  featuredImage: {
+    node: {
+      sourceUrl: string;
+    };
+  };
+  aiToolCategories: {
+    nodes: AIToolCategory[];
+  };
+}
+
