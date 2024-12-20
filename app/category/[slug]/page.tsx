@@ -45,6 +45,13 @@ interface AIToolsResponse {
   edges: AIToolEdge[];
 }
 
+async function getCategoryInfo(slug: string): Promise<AIToolCategory | null> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  const res = await fetch(`${apiUrl}/api/categories/${slug}`, { cache: 'no-store' });
+  if (!res.ok) return null;
+  return res.json();
+}
+
 async function getToolsByCategory(categorySlug: string, first: number = 20, after: string | null = null): Promise<AIToolsResponse> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
   const url = new URL(`${apiUrl}/api/ai-tools`);
@@ -71,35 +78,61 @@ export default function CategoryPage() {
   const [error, setError] = useState<Error | null>(null);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [endCursor, setEndCursor] = useState<string | null>(null);
-  const [categoryName, setCategoryName] = useState(slug as string);
-  const [categoryDescription, setCategoryDescription] = useState('');
+  const [category, setCategory] = useState<AIToolCategory | null>(null);
 
-  const loadTools = async (isInitial: boolean = false) => {
+  useEffect(() => {
+    const fetchCategoryAndTools = async () => {
+      setLoading(true);
+      try {
+        const categoryInfo = await getCategoryInfo(slug as string);
+        setCategory(categoryInfo);
+
+        const data = await getToolsByCategory(slug as string, 20);
+        setTools(data.edges.map(edge => edge.node));
+        setHasNextPage(data.pageInfo.hasNextPage);
+        setEndCursor(data.pageInfo.endCursor);
+      } catch (e) {
+        console.error('Error loading category or tools:', e);
+        setError(e instanceof Error ? e : new Error('An unknown error occurred'));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategoryAndTools();
+  }, [slug]);
+
+  const loadMoreTools = async () => {
     setLoading(true);
     try {
-      const data = await getToolsByCategory(slug as string, 20, isInitial ? null : endCursor);
-      setTools(prevTools => isInitial ? data.edges.map(edge => edge.node) : [...prevTools, ...data.edges.map(edge => edge.node)]);
+      const data = await getToolsByCategory(slug as string, 20, endCursor);
+      setTools(prevTools => [...prevTools, ...data.edges.map(edge => edge.node)]);
       setHasNextPage(data.pageInfo.hasNextPage);
       setEndCursor(data.pageInfo.endCursor);
-      if (isInitial && data.edges.length > 0) {
-        const category = data.edges[0].node.aiToolCategories.nodes[0];
-        setCategoryName(category?.name || slug as string);
-        setCategoryDescription(`Explore the best ${category?.name || slug as string} AI tools on Geekdroid.`);
-      }
     } catch (e) {
-      console.error('Error loading tools:', e);
+      console.error('Error loading more tools:', e);
       setError(e instanceof Error ? e : new Error('An unknown error occurred'));
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    loadTools(true);
-  }, [slug]);
+  const generateDescription = (category: AIToolCategory | null, toolCount: number): string => {
+    if (!category) {
+      return `Explore AI tools in this category on Geekdroid. Find and compare top artificial intelligence solutions.`;
+    }
 
-  const pageTitle = `${categoryName} AI Tools | Geekdroid`;
-  const pageDescription = categoryDescription || `Explore the best ${categoryName} AI tools on Geekdroid. Find and compare top artificial intelligence solutions for ${categoryName.toLowerCase()}.`;
+    const descriptions = [
+      `Discover ${toolCount}+ cutting-edge ${category.name} AI tools on Geekdroid. Enhance your workflow with top-rated artificial intelligence solutions.`,
+      `Explore a curated collection of ${toolCount}+ ${category.name} AI tools. Find the perfect AI solution to streamline your tasks and boost productivity.`,
+      `Browse our selection of ${toolCount}+ innovative ${category.name} AI tools. Compare features and find the ideal AI solution for your needs.`
+    ];
+
+    return descriptions[Math.floor(Math.random() * descriptions.length)];
+  };
+
+  const pageTitle = category ? `${category.name} AI Tools | Geekdroid` : 'AI Tools Category | Geekdroid';
+  const pageDescription = generateDescription(category, tools.length);
 
   if (error) {
     return (
@@ -142,11 +175,11 @@ export default function CategoryPage() {
               Home
             </Link>
             <ChevronRight className="w-4 h-4 text-gray-600" />
-            <span className="text-white">{categoryName}</span>
+            <span className="text-white">{category?.name || 'Category'}</span>
           </nav>
           
           <div className="mx-auto bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
-            <h1 className="text-3xl font-bold text-white mb-8">{categoryName} AI Tools</h1>
+            <h1 className="text-3xl font-bold text-white mb-8">{category?.name || 'Category'} AI Tools</h1>
             
             {tools.length === 0 && !loading ? (
               <Alert className="bg-yellow-900 border-yellow-800">
@@ -164,7 +197,7 @@ export default function CategoryPage() {
                     <ToolCard
                       key={tool.id}
                       title={tool.title}
-                      category={tool.aiToolCategories.nodes[0]?.name || categoryName}
+                      category={tool.aiToolCategories.nodes[0]?.name || category?.name || 'AI Tool'}
                       slug={tool.slug}
                       previewImage={tool.featuredImage?.node?.sourceUrl || "/placeholder.svg"}
                       logo={tool.featuredImage?.node?.sourceUrl || "/placeholder.svg"}
@@ -175,7 +208,7 @@ export default function CategoryPage() {
                 {hasNextPage && (
                   <div className="flex justify-center mt-8">
                     <Button
-                      onClick={() => loadTools()}
+                      onClick={loadMoreTools}
                       disabled={loading}
                       className="bg-purple-600 hover:bg-purple-700 text-white"
                     >
