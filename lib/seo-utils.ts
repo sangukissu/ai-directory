@@ -5,13 +5,14 @@ export interface SEOProps {
   description: string
   canonical?: string
   ogImage?: string
+  techArticleSchema?: any
 }
 
-export function generateMetadata({ title, description, canonical, ogImage }: SEOProps): Metadata {
+export function generateMetadata({ title, description, canonical, ogImage, techArticleSchema }: SEOProps): Metadata {
   const siteName = "Geekdroid"
   const siteUrl = "https://geekdroid.in"
   
-  return {
+  const metadata: Metadata = {
     title: `${title}`,
     description,
     openGraph: {
@@ -32,6 +33,15 @@ export function generateMetadata({ title, description, canonical, ogImage }: SEO
       canonical: canonical || siteUrl,
     },
   }
+
+  if (techArticleSchema) {
+    metadata.other = {
+      ...metadata.other,
+      'tech-article-schema': JSON.stringify(techArticleSchema),
+    }
+  }
+
+  return metadata
 }
 
 export function generateWebSiteSchema() {
@@ -101,5 +111,29 @@ export function generateTechArticleSchema(tool: {
 
 export function cleanExcerpt(excerpt: string): string {
   return excerpt.replace(/<a\s+[^>]*>Read more<\/a>/i, '').trim();
+}
+
+import React from 'react'
+
+export function WebSiteSchema() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Geekdroid",
+          "url": "https://geekdroid.in",
+          "description": "Discover and compare the best AI tools for your needs",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://geekdroid.in/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        })
+      }}
+    />
+  )
 }
 
