@@ -71,22 +71,24 @@ export default function CategoryPage() {
   const [error, setError] = useState<Error | null>(null);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [endCursor, setEndCursor] = useState<string | null>(null);
-  const [categoryName, setCategoryName] = useState('');
+  const [category, setCategory] = useState<AIToolCategory | null>(null);
 
   useEffect(() => {
-    const fetchTools = async () => {
+    const fetchToolsAndCategory = async () => {
       setLoading(true);
       try {
         const data = await getToolsByCategory(slug as string, 20);
         setTools(data.edges.map(edge => edge.node));
         setHasNextPage(data.pageInfo.hasNextPage);
         setEndCursor(data.pageInfo.endCursor);
-        
-        // Set category name from the first tool's category
+
+        // Extract category information from the first tool
         if (data.edges.length > 0) {
           const firstTool = data.edges[0].node;
-          const category = firstTool.aiToolCategories.nodes.find(cat => cat.slug === slug);
-          setCategoryName(category?.name || (slug as string));
+          const categoryInfo = firstTool.aiToolCategories.nodes.find(cat => cat.slug === slug);
+          if (categoryInfo) {
+            setCategory(categoryInfo);
+          }
         }
       } catch (e) {
         console.error('Error loading tools:', e);
@@ -96,7 +98,7 @@ export default function CategoryPage() {
       }
     };
 
-    fetchTools();
+    fetchToolsAndCategory();
   }, [slug]);
 
   const loadMoreTools = async () => {
@@ -114,18 +116,8 @@ export default function CategoryPage() {
     }
   };
 
-  const generateDescription = (categoryName: string, toolCount: number): string => {
-    const descriptions = [
-      `Discover ${toolCount}+ cutting-edge ${categoryName} AI tools on Geekdroid. Enhance your workflow with top-rated artificial intelligence solutions.`,
-      `Explore a curated collection of ${toolCount}+ ${categoryName} AI tools. Find the perfect AI solution to streamline your tasks and boost productivity.`,
-      `Browse our selection of ${toolCount}+ innovative ${categoryName} AI tools. Compare features and find the ideal AI solution for your needs.`
-    ];
-
-    return descriptions[Math.floor(Math.random() * descriptions.length)];
-  };
-
-  const pageTitle = `${categoryName} AI Tools | Geekdroid`;
-  const pageDescription = generateDescription(categoryName, tools.length);
+  const pageTitle = category ? `${category.name} AI Tools | Geekdroid` : 'AI Tools Category | Geekdroid';
+  const pageDescription = `Explore the best ${category?.name || ''} AI tools on Geekdroid. Find and compare top artificial intelligence solutions for ${category?.name?.toLowerCase() || 'various categories'}.`;
 
   if (error) {
     return (
@@ -168,11 +160,11 @@ export default function CategoryPage() {
               Home
             </Link>
             <ChevronRight className="w-4 h-4 text-gray-600" />
-            <span className="text-white">{categoryName || 'Category'}</span>
+            <span className="text-white">{category?.name || 'Category'}</span>
           </nav>
           
           <div className="mx-auto bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
-            <h1 className="text-3xl font-bold text-white mb-8">{categoryName || 'Category'} AI Tools</h1>
+            <h1 className="text-3xl font-bold text-white mb-8">{category?.name || 'Category'} AI Tools</h1>
             
             {tools.length === 0 && !loading ? (
               <Alert className="bg-yellow-900 border-yellow-800">
@@ -190,7 +182,7 @@ export default function CategoryPage() {
                     <ToolCard
                       key={tool.id}
                       title={tool.title}
-                      category={tool.aiToolCategories.nodes[0]?.name || categoryName || 'AI Tool'}
+                      category={tool.aiToolCategories.nodes[0]?.name || category?.name || 'AI Tool'}
                       slug={tool.slug}
                       previewImage={tool.featuredImage?.node?.sourceUrl || "/placeholder.svg"}
                       logo={tool.featuredImage?.node?.sourceUrl || "/placeholder.svg"}
