@@ -25,7 +25,7 @@ export function Footer() {
             <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li><Link href="/" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
-              <li><Link href="/page/categories" className="text-gray-400 hover:text-white transition-colors">Categories</Link></li>
+              <li><Link href="/categories" className="text-gray-400 hover:text-white transition-colors">Categories</Link></li>
               <li><Link href="/submit" className="text-gray-400 hover:text-white transition-colors">Submit Tool</Link></li>
               <li><Link href="/page/about" className="text-gray-400 hover:text-white transition-colors">About Us</Link></li>
             </ul>
