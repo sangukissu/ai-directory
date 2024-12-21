@@ -108,12 +108,12 @@ export function SiteNav() {
           <Link href="/" className="flex items-center space-x-2">
             <Image
               src="/placeholder.svg"
-              alt="FindMyAITool"
+              alt="Geekdroid"
               width={40}
               height={40}
               className="rounded-full"
             />
-            <span className="text-xl font-bold text-white">findmyaitool</span>
+            <span className="text-xl font-bold text-white">Geekdroid</span>
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
@@ -165,12 +165,12 @@ export function SiteNav() {
                 <Link href="/" className="flex items-center space-x-2" onClick={toggleMenu}>
                   <Image
                     src="/placeholder.svg"
-                    alt="FindMyAITool"
+                    alt="Geekdroid"
                     width={40}
                     height={40}
                     className="rounded-full"
                   />
-                  <span className="text-xl font-bold text-white">findmyaitool</span>
+                  <span className="text-xl font-bold text-white">Geekdroid</span>
                 </Link>
                 <Button 
                   variant="ghost" 
