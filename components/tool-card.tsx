@@ -1,6 +1,10 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Image from "next/image"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
+import { Bookmark } from 'lucide-react'
 
 interface ToolCardProps {
   title: string
@@ -12,6 +16,29 @@ interface ToolCardProps {
 }
 
 export function ToolCard({ title, category, slug, previewImage, logo, isVerified }: ToolCardProps) {
+  const [isBookmarked, setIsBookmarked] = useState(false)
+
+  useEffect(() => {
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '{}')
+    setIsBookmarked(!!bookmarks[slug])
+  }, [slug])
+
+  const toggleBookmark = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '{}')
+    
+    if (isBookmarked) {
+      delete bookmarks[slug]
+    } else {
+      bookmarks[slug] = { name: title, slug: slug }
+    }
+
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks))
+    setIsBookmarked(!isBookmarked)
+  }
+
   return (
     <Link 
       href={`/tool/${slug}`}
@@ -25,6 +52,12 @@ export function ToolCard({ title, category, slug, previewImage, logo, isVerified
             fill
             className="object-cover transform group-hover:scale-105 transition-transform duration-300"
           />
+          <button 
+            className="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full cursor-pointer hover:bg-opacity-70 transition-all duration-200"
+            onClick={toggleBookmark}
+          >
+            <Bookmark className={`h-5 w-5 ${isBookmarked ? 'text-purple-500 fill-purple-500' : 'text-white'}`} />
+          </button>
         </div>
       </div>
       <div className="px-3 pb-3 pt-2 flex items-center gap-3">
@@ -57,8 +90,8 @@ export function ToolCard({ title, category, slug, previewImage, logo, isVerified
             )}
           </h3>
           <Link href={`/category/${category.toLowerCase().replace(/\s+/g, '-')}`} className="text-xs text-gray-400 hover:text-gray-300 truncate">
-  {category}
-</Link>
+            {category}
+          </Link>
         </div>
       </div>
     </Link>
