@@ -1,5 +1,3 @@
-// app/tool/[slug]/page.tsx
-
 import { ExternalLink, ChevronRight } from 'lucide-react'
 import { CheckCircle2 } from 'lucide-react'
 import Link from "next/link"
@@ -12,6 +10,7 @@ import { Metadata } from 'next'
 import { generateMetadata as generateSEOMetadata, generateTechArticleSchema, cleanExcerpt } from '@/lib/seo-utils'
 import React from 'react';
 import { BookmarkButton } from '@/components/BookmarkButton'
+import { AdSense } from '@/components/AdSense'
 
 interface AIToolCategory {
   name: string;
@@ -258,7 +257,7 @@ export default async function ToolPage({ params }: { params: { slug: string } })
                       dangerouslySetInnerHTML={{ __html: cleanExcerpt(tool.excerpt) }} 
                     />
                   )}
-
+                  <AdSense adSlot="1234567890" adFormat="fluid" fullWidthResponsive={true} />
                   <div className="flex items-center space-x-4">
                     {tool.affiliateLink ? (
                       <Link 
@@ -294,14 +293,17 @@ export default async function ToolPage({ params }: { params: { slug: string } })
                     {formatContent(tool.content)}
                   </div>
                 )}
-
+                <AdSense adSlot="0987654321" adFormat="fluid" fullWidthResponsive={true} />
                 {tool.modifiedGmt && (
                   <p className="text-sm text-gray-400 mt-8">
                     Last updated: {formatDate(tool.modifiedGmt)}
                   </p>
                 )}
               </div>
-
+{/* AdSense Component */}
+<div className="bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
+        <AdSense adSlot="1234567890" adFormat="auto" fullWidthResponsive={true} />
+      </div>
               <PromoteTool toolName={tool.title} toolSlug={tool.slug} />
             </div>
 
