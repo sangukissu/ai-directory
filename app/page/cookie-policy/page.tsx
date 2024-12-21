@@ -5,15 +5,15 @@ const CookiePolicyPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Cookie Policy - FindMyAITool</title>
-        <meta name="description" content="Learn about how FindMyAITool uses cookies and similar technologies to recognize you when you visit our website." />
+        <title>Cookie Policy - Geekdroid</title>
+        <meta name="description" content="Learn about how Geekdroid uses cookies and similar technologies to recognize you when you visit our website." />
       </Head>
       <div className="min-h-screen bg-black text-white">
         <div className="container mx-auto px-4 py-16">
           <h1 className="text-4xl font-bold mb-8">Cookie Policy</h1>
           <div className="space-y-6 text-gray-300">
             <p>
-              This Cookie Policy explains how FindMyAITool uses cookies and similar technologies to recognize you when you visit our website. It explains what these technologies are and why we use them, as well as your rights to control our use of them.
+              This Cookie Policy explains how Geekdroid uses cookies and similar technologies to recognize you when you visit our website. It explains what these technologies are and why we use them, as well as your rights to control our use of them.
             </p>
             <h2 className="text-2xl font-semibold mt-8 mb-4">What are cookies?</h2>
             <p>
@@ -40,7 +40,7 @@ const CookiePolicyPage: NextPage = () => {
               We may update this Cookie Policy from time to time in order to reflect, for example, changes to the cookies we use or for other operational, legal or regulatory reasons. Please therefore re-visit this Cookie Policy regularly to stay informed about our use of cookies and related technologies.
             </p>
             <p className="mt-8">
-              If you have any questions about our use of cookies or other technologies, please contact us at cookies@findmyaitool.com.
+              If you have any questions about our use of cookies or other technologies, please contact us at cookies@Geekdroid.com.
             </p>
             <p className="mt-4">
               Last updated: {new Date().toLocaleDateString()}
