@@ -35,7 +35,7 @@ export function BookmarkButton({ toolSlug, toolName }: BookmarkButtonProps) {
       onClick={toggleBookmark}
       variant={isBookmarked ? "secondary" : "outline"}
       size="sm"
-      className="ml-4"
+      className="ml-4 bg-black px-4 py-2 border text-white border-[#1d2433]"
     >
       <Bookmark className={`mr-2 h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
       {isBookmarked ? 'Bookmarked' : 'Bookmark'}
