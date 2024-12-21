@@ -6,6 +6,7 @@ import { Metadata } from 'next'
 import { generateMetadata, generateWebSiteSchema } from '@/lib/seo-utils'
 import { adsenseConfig } from '@/lib/adsense-config'
 import Script from 'next/script'
+import { AdSense } from '@/components/AdSense'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -44,10 +45,10 @@ export default function RootLayout({
           <main className="flex-grow">
             {children}
           </main>
+          <AdSense adSlot="2468013579" adFormat="auto" fullWidthResponsive={true} />
           <Footer />
         </div>
       </body>
     </html>
   )
 }
-
