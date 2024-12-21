@@ -40,8 +40,8 @@ export default function BookmarksPage() {
             {Object.entries(bookmarks).map(([slug, tool]) => (
               <li key={slug} className="flex items-center justify-between bg-[#0d1117] rounded-xl border border-[#1d2433] p-4">
                 <div className="flex items-center">
-                  <Bookmark className="mr-2 h-5 w-5 text-purple-500" />
-                  <Link href={`/tool/${slug}`} className="text-lg hover:text-purple-400 transition-colors">
+                  <Bookmark className="mr-2 h-5 w-5 text-primary" />
+                  <Link href={`/tool/${slug}`} className="text-lg hover:text-primary/90 transition-colors">
                     {tool.name}
                   </Link>
                 </div>
