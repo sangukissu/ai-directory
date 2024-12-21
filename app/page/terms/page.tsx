@@ -5,15 +5,15 @@ const TermsOfServicePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Terms of Service - FindMyAITool</title>
-        <meta name="description" content="Read our Terms of Service to understand the rules and regulations governing the use of FindMyAITool." />
+        <title>Terms of Service - Geekdroid</title>
+        <meta name="description" content="Read our Terms of Service to understand the rules and regulations governing the use of Geekdroid." />
       </Head>
       <div className="min-h-screen bg-black text-white">
         <div className="container mx-auto px-4 py-16">
           <h1 className="text-4xl font-bold mb-8">Terms of Service</h1>
           <div className="space-y-6 text-gray-300">
             <p>
-              Welcome to FindMyAITool. By accessing or using our website, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you may not access our website or use our services.
+              Welcome to Geekdroid. By accessing or using our website, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you may not access our website or use our services.
             </p>
             <h2 className="text-2xl font-semibold mt-8 mb-4">1. Use of Our Services</h2>
             <p>
@@ -25,11 +25,11 @@ const TermsOfServicePage: NextPage = () => {
             </p>
             <h2 className="text-2xl font-semibold mt-8 mb-4">3. Content</h2>
             <p>
-              Our website allows you to submit, post, and share content. You retain ownership of any intellectual property rights that you hold in that content. By submitting content, you grant FindMyAITool a worldwide, royalty-free license to use, reproduce, modify, and distribute that content.
+              Our website allows you to submit, post, and share content. You retain ownership of any intellectual property rights that you hold in that content. By submitting content, you grant Geekdroid a worldwide, royalty-free license to use, reproduce, modify, and distribute that content.
             </p>
             <h2 className="text-2xl font-semibold mt-8 mb-4">4. Intellectual Property</h2>
             <p>
-              The content, features, and functionality of our website are owned by FindMyAITool and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
+              The content, features, and functionality of our website are owned by Geekdroid and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
             </p>
             <h2 className="text-2xl font-semibold mt-8 mb-4">5. Termination</h2>
             <p>
@@ -37,7 +37,7 @@ const TermsOfServicePage: NextPage = () => {
             </p>
             <h2 className="text-2xl font-semibold mt-8 mb-4">6. Limitation of Liability</h2>
             <p>
-              In no event shall FindMyAITool, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the service.
+              In no event shall Geekdroid, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the service.
             </p>
             <h2 className="text-2xl font-semibold mt-8 mb-4">7. Governing Law</h2>
             <p>
@@ -48,7 +48,7 @@ const TermsOfServicePage: NextPage = () => {
               We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will provide notice of any significant changes by posting the new Terms on this page.
             </p>
             <p className="mt-8">
-              If you have any questions about these Terms, please contact us at terms@findmyaitool.com.
+              If you have any questions about these Terms, please contact us at terms@Geekdroid.com.
             </p>
             <p className="mt-4">
               Last updated: {new Date().toLocaleDateString()}
