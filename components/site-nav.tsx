@@ -24,7 +24,7 @@ interface AITool {
 const navItems = [
   { name: "Home", href: "/" },
   { name: "Categories", href: "/categories" },
-  { name: "Submit AI Tool", href: "/submit" },
+  { name: "All Tools", href: "/tools" },
   { name: "Bookmarks", href: "/bookmarks" },
 ]
 
