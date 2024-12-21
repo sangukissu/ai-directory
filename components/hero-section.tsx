@@ -167,9 +167,9 @@ export function HeroSection() {
           <Link href="/tools">
   <Button
     size="lg"
-    className="rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:from-cyan-600 hover:to-purple-600 transition-all duration-300 ease-in-out transform hover:scale-105"
+    className="rounded-full bg-primary text-white hover:bg-primary/90 transition-all duration-300 ease-in-out transform hover:scale-105"
   >
-    Explore 4+ AI Tools
+    Explore All AI Tools
   </Button>
 </Link>
 
