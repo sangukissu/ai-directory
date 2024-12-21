@@ -164,19 +164,24 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <Button 
-              size="lg" 
-              className="rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:from-cyan-600 hover:to-purple-600 transition-all duration-300 ease-in-out transform hover:scale-105"
-            >
-              Explore 4+ AI Tools
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="rounded-full hover:text-white border-2 border-gray-600 hover:bg-gray-700/50 transition-all duration-300 ease-in-out transform hover:scale-105"
-            >
-              View All Categories
-            </Button>
+          <Link href="/tools">
+  <Button
+    size="lg"
+    className="rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:from-cyan-600 hover:to-purple-600 transition-all duration-300 ease-in-out transform hover:scale-105"
+  >
+    Explore 4+ AI Tools
+  </Button>
+</Link>
+
+<Link href="/categories">
+  <Button
+    size="lg"
+    variant="outline"
+    className="rounded-full hover:text-white border-2 border-gray-600 hover:bg-gray-700/50 transition-all duration-300 ease-in-out transform hover:scale-105"
+  >
+    View All Categories
+  </Button>
+</Link>
           </motion.div>
 
           <motion.div 
