@@ -9,6 +9,7 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useDebounce } from '@/hooks/use-debounce'
 import { sanitizeSearchTerm } from '@/lib/utils'
+import { AnimatedBackground } from './AnimatedBackground'
 
 interface AITool {
   id: string;
@@ -34,7 +35,7 @@ export function HeroSection() {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState<AITool[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const debouncedSearchTerm = useDebounce(searchTerm, 500) // Increased debounce delay
+  const debouncedSearchTerm = useDebounce(searchTerm, 500)
   const searchRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export function HeroSection() {
 
   useEffect(() => {
     const searchAITools = async () => {
-      if (debouncedSearchTerm.length >= 3) { // Minimum 3 characters to trigger search
+      if (debouncedSearchTerm.length >= 3) {
         setIsLoading(true)
         try {
           const sanitizedTerm = sanitizeSearchTerm(debouncedSearchTerm)
@@ -77,30 +78,46 @@ export function HeroSection() {
   }, [debouncedSearchTerm])
 
   return (
-    <section className="relative py-20 overflow-hidden bg-black">
-      <div className="container px-4 mx-auto">
-        <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-8">
-            <span className="text-gray-400">Discover Best </span>
-            <span className="bg-gradient-to-r from-red-500 to-rose-500 text-transparent bg-clip-text">AI</span>
+    <section className="relative py-20 lg:py-32 overflow-hidden bg-black">
+      <div className="container px-4 mx-auto relative z-10">
+        <div className="text-center max-w-5xl mx-auto">
+          <motion.h1 
+            className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="text-gray-300">Discover Best </span>
+            <span className="bg-gradient-to-r from-[#FF4B4B] to-[#FF6B6B] text-transparent bg-clip-text">AI</span>
             {' '}
-            <span className="bg-gradient-to-r from-green-500 to-purple-500 text-transparent bg-clip-text">Tools</span>
+            <span className="bg-gradient-to-r from-[#4ECDC4] via-[#45B7D1] to-[#8A2BE2] text-transparent bg-clip-text">Tools</span>
             {' '}
-            <span className="text-gray-400">for Every Need</span>
+            <span className="text-gray-300">for Every Need</span>
             <br />
-            <span className="bg-gradient-to-r from-blue-500 to-cyan-500 text-transparent bg-clip-text"> in One Place!</span>
-          </h1>
-          <p className="text-gray-400 text-xl mb-12">
+            <span className="bg-gradient-to-r from-[#4ECDC4] via-[#45B7D1] to-[#8A2BE2] text-transparent bg-clip-text">in One Place!</span>
+          </motion.h1>
+          <motion.p 
+            className="text-gray-400 text-xl md:text-2xl mb-12 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             Explore, Compare, and Choose from a Curated Directory of AI Tools for Business, Creativity, Development, and More.
-          </p>
+          </motion.p>
           
-          <div className="max-w-2xl mx-auto mb-12 relative" ref={searchRef}>
+          <motion.div 
+            className="max-w-2xl mx-auto mb-12 relative"
+            ref={searchRef}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
             <div className="relative">
-              <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <Input
                 type="search"
                 placeholder="Search AI tools..."
-                className="w-full pl-12 pr-4 py-6 bg-gray-900 border-gray-800 rounded-full text-gray-100 placeholder:text-gray-400"
+                className="w-full pl-14 pr-6 py-6 bg-gray-800/50  border-2 border-gray-700 rounded-full text-gray-100 placeholder:text-gray-400 text-lg focus:ring-2 focus:ring-cyan-500 transition-all duration-300 ease-in-out"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -111,23 +128,26 @@ export function HeroSection() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute z-10 w-full mt-2 bg-gray-900 border border-gray-800 rounded-lg shadow-lg overflow-hidden"
+                  className="absolute z-10 w-full mt-2 bg-gray-800/95 backdrop-blur-sm border border-gray-700 rounded-2xl shadow-2xl overflow-hidden"
                 >
                   {isLoading ? (
-                    <div className="p-4 text-center text-gray-400">Searching...</div>
+                    <div className="p-6 text-center text-gray-300">
+                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-cyan-500 mx-auto mb-2"></div>
+                      Searching...
+                    </div>
                   ) : (
                     <ul className="max-h-96 overflow-y-auto">
                       {searchResults.map((tool) => (
-                        <li key={tool.id} className="border-b border-gray-800 last:border-b-0">
-                          <Link href={`/tool/${tool.slug}`} className="flex items-center p-4 hover:bg-gray-800 transition-colors">
+                        <li key={tool.id} className="border-b border-gray-700 last:border-b-0">
+                          <Link href={`/tool/${tool.slug}`} className="flex items-center p-4 hover:bg-gray-700 transition-colors duration-200">
                             <Image
                               src={tool.featuredImage?.node?.sourceUrl || '/placeholder.svg'}
                               alt={tool.title}
-                              width={40}
-                              height={40}
+                              width={48}
+                              height={48}
                               className="rounded-full mr-4"
                             />
-                            <span className="text-white">{tool.title}</span>
+                            <span className="text-white text-lg">{tool.title}</span>
                           </Link>
                         </li>
                       ))}
@@ -136,38 +156,61 @@ export function HeroSection() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </motion.div>
 
-          <div className="flex justify-center gap-4 mb-16">
-            <Button size="lg" className="rounded-full bg-white text-black hover:bg-gray-100">
+          <motion.div 
+            className="flex flex-col sm:flex-row justify-center gap-4 mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <Button 
+              size="lg" 
+              className="rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:from-cyan-600 hover:to-purple-600 transition-all duration-300 ease-in-out transform hover:scale-105"
+            >
               Explore 4+ AI Tools
             </Button>
-            <Button size="lg" variant="outline" className="rounded-full border-gray-700 text-white hover:bg-gray-800">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="rounded-full hover:text-white border-2 border-gray-600 hover:bg-gray-700/50 transition-all duration-300 ease-in-out transform hover:scale-105"
+            >
               View All Categories
             </Button>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-8 max-w-3xl mx-auto">
-            {popularTools.map((tool) => (
+          <motion.div 
+            className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6 md:gap-8 max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+          >
+            {popularTools.map((tool, index) => (
               <Link 
                 key={tool.name}
                 href={`/tool/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
-                className="flex flex-col items-center gap-2 group"
+                className="flex flex-col items-center gap-3 group"
               >
-                <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-emerald-500 transition-transform group-hover:scale-110">
+                <motion.div 
+                  className="relative w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-400 to-purple-500 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:shadow-lg"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
+                >
                   <Image
                     src={tool.logo}
                     alt={tool.name}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-opacity duration-300 group-hover:opacity-80"
                   />
-                </div>
-                <span className="text-gray-400 text-sm">{tool.name}</span>
+                </motion.div>
+                <span className="text-gray-300 text-sm md:text-base font-medium group-hover:text-white transition-colors duration-200">{tool.name}</span>
               </Link>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
+      <AnimatedBackground />
     </section>
   )
 }
