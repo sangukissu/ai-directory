@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Bookmark, Trash2 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
+import { AdSense } from "@/components/AdSense"
+
 
 interface BookmarkedTool {
   slug: string
@@ -29,6 +31,8 @@ export default function BookmarksPage() {
     <div className="min-h-screen bg-black text-white">
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <h1 className="text-4xl font-bold mb-8">Your Bookmarked Tools</h1>
+        <AdSense adSlot="1234567890" adFormat="auto" fullWidthResponsive={true} />
+
         {Object.keys(bookmarks).length === 0 ? (
           <p className="text-gray-400">You haven't bookmarked any tools yet.</p>
         ) : (
