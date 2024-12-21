@@ -5,6 +5,7 @@ import { Flag, Facebook, Twitter, LinkedinIcon as LinkedIn, LinkIcon, Check } fr
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useState, useEffect } from 'react'
 import { CompactToolCard } from "./compact-tool-card"
+import { AdSense } from "@/components/AdSense"
 
 interface AIToolCategory {
   name: string;
@@ -58,6 +59,10 @@ export function ToolSidebar({ toolName, toolSlug, relatedTools }: ToolSidebarPro
   return (
     <div className="space-y-6">
       {/* Related Tools Section */}
+      {/* AdSense Component */}
+      <div className="bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
+        <AdSense adSlot="1234567890" adFormat="auto" fullWidthResponsive={true} />
+      </div>
       {relatedTools.length > 0 && (
         <div className="bg-[#0d1117] rounded-2xl border border-[#1d2433] p-2 py-4">
           <h2 className="text-lg font-semibold text-white mb-4 px-1">Related AI Tools</h2>
@@ -78,6 +83,7 @@ export function ToolSidebar({ toolName, toolSlug, relatedTools }: ToolSidebarPro
       <div className="bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
         <h2 className="text-lg font-semibold text-white mb-4">Share This Tool</h2>
         <div className="space-y-4">
+          
           {/* Social Share Buttons */}
           <div className="grid grid-cols-4 gap-2">
             <TooltipProvider>
@@ -154,13 +160,18 @@ export function ToolSidebar({ toolName, toolSlug, relatedTools }: ToolSidebarPro
           </div>
 
           {/* Report Issue Button */}
-          <Button 
-            variant="outline" 
-            className="w-full justify-start bg-[#1a1f2c] hover:bg-[#252b3b] text-white border-[#2d3548] rounded-xl h-11"
+          <a
+            href={`mailto:contact@geekdroid.in?subject=Issue Report: ${toolName}&body=I'd like to report an issue with the tool: ${toolName} (${toolSlug})`}
+            className="w-full inline-block"
           >
-            <Flag className="mr-2 h-4 w-4" />
-            Report Issue
-          </Button>
+            <Button 
+              variant="outline" 
+              className="w-full justify-start bg-[#1a1f2c] hover:bg-[#252b3b] text-white border-[#2d3548] rounded-xl h-11"
+            >
+              <Flag className="mr-2 h-4 w-4" />
+              Report Issue
+            </Button>
+          </a>
         </div>
       </div>
 
@@ -169,9 +180,20 @@ export function ToolSidebar({ toolName, toolSlug, relatedTools }: ToolSidebarPro
         <p className="text-sm text-gray-400 mb-4">
           Have an AI tool that's not listed? Submit it to our directory!
         </p>
-        <Button className="w-full bg-primary hover:bg-blue-700 text-white rounded-xl h-11">
-          Submit AI Tool
-        </Button>
+        
+        <a
+          href={`mailto:contact@geekdroid.in?subject=New Tool Submission&body=I'd like to submit a new AI tool to your directory.%0A%0ATool Name:%0ATool Description:%0ATool Website:%0ACategory:`}
+          className="w-full inline-block"
+        >
+          <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-11">
+            Submit AI Tool
+          </Button>
+        </a>
+      </div>
+
+      {/* AdSense Component */}
+      <div className="bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
+        <AdSense adSlot="1234567890" adFormat="auto" fullWidthResponsive={true} />
       </div>
     </div>
   )
