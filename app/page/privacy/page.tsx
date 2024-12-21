@@ -5,15 +5,15 @@ const PrivacyPolicyPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Privacy Policy - FindMyAITool</title>
-        <meta name="description" content="Read our Privacy Policy to understand how we collect, use, and protect your personal information at FindMyAITool." />
+        <title>Privacy Policy - Geekdroid</title>
+        <meta name="description" content="Read our Privacy Policy to understand how we collect, use, and protect your personal information at Geekdroid." />
       </Head>
       <div className="min-h-screen bg-black text-white">
         <div className="container mx-auto px-4 py-16">
           <h1 className="text-4xl font-bold mb-8">Privacy Policy</h1>
           <div className="space-y-6 text-gray-300">
             <p>
-              At FindMyAITool, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, disclose, and safeguard your data when you use our website and services.
+              At Geekdroid, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, disclose, and safeguard your data when you use our website and services.
             </p>
             <h2 className="text-2xl font-semibold mt-8 mb-4">Information We Collect</h2>
             <p>
@@ -40,7 +40,7 @@ const PrivacyPolicyPage: NextPage = () => {
               We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "last updated" date.
             </p>
             <p className="mt-8">
-              If you have any questions about this Privacy Policy, please contact us at privacy@findmyaitool.com.
+              If you have any questions about this Privacy Policy, please contact us at privacy@Geekdroid.com.
             </p>
             <p className="mt-4">
               Last updated: {new Date().toLocaleDateString()}
