@@ -56,7 +56,7 @@ export function ToolCard({ title, category, slug, previewImage, logo, isVerified
             className="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full cursor-pointer hover:bg-opacity-70 transition-all duration-200"
             onClick={toggleBookmark}
           >
-            <Bookmark className={`h-5 w-5 ${isBookmarked ? 'text-purple-500 fill-purple-500' : 'text-white'}`} />
+            <Bookmark className={`h-5 w-5 ${isBookmarked ? 'text-primary fill-primary' : 'text-white'}`} />
           </button>
         </div>
       </div>
