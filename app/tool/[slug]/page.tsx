@@ -242,7 +242,7 @@ export default async function ToolPage({ params }: { params: { slug: string } })
             <div className="lg:col-span-3 space-y-8">
               <div className="bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
                 <div className="mb-8">
-                  <h1 className="text-4xl font-bold mb-4">{tool.title}</h1>
+                  <h1 className="text-4xl font-bold mb-4 text-white">{tool.title}</h1>
                   {tool.aiToolCategories && tool.aiToolCategories.nodes && tool.aiToolCategories.nodes[0] && (
                     <Link 
                       href={`/category/${tool.aiToolCategories.nodes[0].slug}`}
