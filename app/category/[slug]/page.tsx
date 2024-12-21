@@ -5,6 +5,8 @@ import { ChevronRight } from 'lucide-react'
 import { Metadata } from 'next'
 import ApolloWrapper from '@/components/ApolloWrapper'
 import { CategoryPage as CategoryPageContent } from '@/components/CategoryPage'
+import { AdSense } from "@/components/AdSense"
+
 
 interface CategoryData {
   name: string;
@@ -71,6 +73,9 @@ export default async function CategoryPage({ params }: { params: { slug: string 
           </nav>
           
           <div className="mx-auto bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
+            {/* AdSense Component */}
+        <AdSense adSlot="1234567890" adFormat="auto" fullWidthResponsive={true} />
+     
             <h1 className="text-3xl font-bold text-white mb-4">{categoryData.name} AI Tools</h1>
             {categoryData.description && (
               <p className="text-gray-400 mb-8">{categoryData.description}</p>
@@ -79,6 +84,8 @@ export default async function CategoryPage({ params }: { params: { slug: string 
             <Suspense fallback={<div className="text-white">Loading AI Tools...</div>}>
               <CategoryPageContent slug={params.slug} initialCategoryName={categoryData.name} />
             </Suspense>
+            <AdSense adSlot="1234567890" adFormat="auto" fullWidthResponsive={true} />
+
           </div>
         </main>
       </div>
