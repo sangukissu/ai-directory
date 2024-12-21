@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <h2 className="text-2xl font-bold text-white mb-4">FindMyAITool</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">Geekdroid</h2>
             <p className="text-gray-400 mb-4">Discover and compare the best AI tools for your needs. Our curated directory helps you find the perfect AI solution for your projects.</p>
             <div className="flex space-x-4">
               <Link href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
