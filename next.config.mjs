@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['new.codewp.in', 'localhost', 'ai-tools-chi.vercel.app'],
+    domains: ['new.codewp.in', 'localhost', 'ai-tools-chi.vercel.app', 'geekdroid.in'],
     remotePatterns: [
       {
         protocol: 'https',
