@@ -101,7 +101,7 @@ export function SiteNav() {
   return (
     <>
       <div className="w-full bg-black text-white py-1 px-4 text-center border-b border-gray-800">
-        🏆 Ranking #1 in AI Tools – Submit Your Tool Today! 🚀
+        🌟 Connecting AI Creators with Users – Submit Your Tool Today! 🚀
       </div>
       <header className="sticky top-0 z-50 border-b bg-black border-gray-800">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
