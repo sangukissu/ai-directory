@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Share, Copy, Check } from 'lucide-react'
 import Image from 'next/image'
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface PromoteToolProps {
   toolName: string
@@ -20,7 +20,6 @@ export function PromoteTool({ toolName, toolSlug }: PromoteToolProps) {
   const [copied, setCopied] = useState(false)
   const toolUrl = `https://geekdroid.in/tool/${toolSlug}`
 
-  
   const embedCode = `<a href="https://geekdroid.in/tool/${toolSlug}" target="_blank" rel="noopener">
  <img src="https://geekdroid.in/bg-logo.webp" alt="Featured on Geekdroid" width="240" height="56" />
 </a>`
@@ -36,14 +35,14 @@ export function PromoteTool({ toolName, toolSlug }: PromoteToolProps) {
   }
 
   return (
-    <div className="relative overflow-hidden bg-[#0d1117] rounded-2xl border border-[#1d2433] p-5">
+    <div className="relative overflow-hidden bg-[#0d1117] rounded-2xl border border-[#1d2433] p-4 sm:p-5">
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start justify-between mb-6 gap-4">
           <div>
-            <h2 className="text-3xl font-bold text-white mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
               Promote {toolName}
             </h2>
-            <p className="text-gray-400">
+            <p className="text-sm sm:text-base text-gray-400">
               Maximize Your Reach: Unleashing the Potential of Promote Your Tool
             </p>
           </div>
@@ -52,7 +51,7 @@ export function PromoteTool({ toolName, toolSlug }: PromoteToolProps) {
               <Button 
                 variant="ghost"
                 size="sm"
-                className="h-9 bg-white/5 hover:bg-white/10 text-white rounded-lg px-4"
+                className="h-9 bg-white/5 hover:bg-white/10 text-white rounded-lg px-4 w-full sm:w-auto"
               >
                 <Share className="w-4 h-4 mr-2" />
                 Share on
@@ -61,7 +60,7 @@ export function PromoteTool({ toolName, toolSlug }: PromoteToolProps) {
             <DropdownMenuContent align="end" className="w-[180px]">
               <DropdownMenuItem asChild>
                 <a 
-                  href={`https://twitter.com/intent/tweet?text=Check out ${toolName}&url=${encodeURIComponent(toolUrl)}`}
+                  href={`https://twitter.com/intent/tweet?text=Check out ${encodeURIComponent(toolName)}&url=${encodeURIComponent(toolUrl)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="cursor-pointer"
@@ -81,7 +80,7 @@ export function PromoteTool({ toolName, toolSlug }: PromoteToolProps) {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <a 
-                  href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(toolUrl)}`}
+                  href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(toolUrl)}&title=${encodeURIComponent(toolName)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="cursor-pointer"
@@ -93,20 +92,20 @@ export function PromoteTool({ toolName, toolSlug }: PromoteToolProps) {
           </DropdownMenu>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3 bg-[#0d1117] rounded-lg px-4 py-2 border border-[#1d2433]">
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex items-center justify-center w-full sm:w-auto bg-[#0d1117] rounded-lg px-4 py-2 border border-[#1d2433]">
             <Image
               src="/bg-logo.webp"
               alt="FindMyAITool Badge"
               width={240}
               height={56}
-              className="rounded-lg"
+              className="rounded-lg max-w-full h-auto"
             />
           </div>
 
           <Button
             variant="secondary"
-            className="bg-[#0d1117] text-white hover:bg-gray-800/70 border border-[#1d2433]"
+            className="bg-[#0d1117] text-white hover:bg-gray-800/70 border border-[#1d2433] w-full sm:w-auto"
             onClick={handleCopyCode}
           >
             {copied ? (
