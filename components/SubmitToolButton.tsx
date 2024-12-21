@@ -9,7 +9,7 @@ export default function SubmitToolButton() {
   return (
     <Button 
       onClick={() => router.push('/submit')} 
-      className="mt-4 bg-purple-600 hover:bg-purple-700"
+      className="mt-4 bbg-primary hover:bg-primary/90"
     >
       Submit AI Tool
     </Button>
