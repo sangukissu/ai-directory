@@ -167,7 +167,7 @@ export function ToolsHeader() {
             <p className="text-sm text-gray-300">Categories</p>
           </div>
           <div className="bg-gray-800 bg-opacity-50 rounded-lg p-4 flex-1 min-w-[200px] border border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.4)]">
-            <h3 className="text-lg font-semibold mb-2">Weekly</h3>
+            <h3 className="text-lg font-semibold mb-2">Everyday</h3>
             <p className="text-sm text-gray-300">New Tools Added</p>
           </div>
         </div>
