@@ -106,7 +106,7 @@ export function ToolsHeader() {
   return (
     <div className="bg-black text-white">
       <div className="container mx-auto px-4 py-16 max-w-7xl">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-transparent text-primary">Discover AI Tools</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">Discover AI Tools</h1>
         <p className="text-xl mb-8 text-gray-300">Explore our curated collection of cutting-edge AI tools to supercharge your workflow</p>
         
         <div className="flex gap-4 mb-8">
