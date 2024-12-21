@@ -1,6 +1,6 @@
 import { HeroSection } from '@/components/hero-section'
 import { CategoriesSection } from '@/components/categories-section'
-import { AIToolsSection } from '@/components/AIToolsSection'
+import { AIToolsSection } from '@/components/HomeToolSection'
 import ApolloWrapper from '@/components/ApolloWrapper'
 import { generateMetadata, generateWebPageSchema } from '@/lib/seo-utils'
 import { Metadata } from 'next'
