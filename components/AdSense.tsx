@@ -4,37 +4,33 @@ import { useEffect } from 'react'
 import { adsenseConfig } from '@/lib/adsense-config'
 
 interface AdSenseProps {
-  slot: string
-  style?: React.CSSProperties
-  format?: 'auto' | 'fluid'
-  layout?: string
-  responsive?: boolean
+  adSlot: string
+  adFormat?: string
+  fullWidthResponsive?: boolean
 }
 
-export function AdSense({ slot, style, format = 'auto', layout, responsive = true }: AdSenseProps) {
+export function AdSense({ adSlot, adFormat = 'auto', fullWidthResponsive = true }: AdSenseProps) {
   useEffect(() => {
     try {
       // @ts-ignore
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      (window.adsbygoogle = window.adsbygoogle || []).push({})
     } catch (err) {
-      console.error('AdSense error:', err);
+      console.error(err)
     }
-  }, []);
+  }, [])
 
   if (!adsenseConfig.enabled) {
-    return null;
+    return null
   }
 
   return (
     <ins
       className="adsbygoogle"
-      style={style || { display: 'block' }}
+      style={{ display: 'block' }}
       data-ad-client={adsenseConfig.client}
-      data-ad-slot={slot}
-      data-ad-format={format}
-      data-full-width-responsive={responsive}
-      {...(layout && { 'data-ad-layout': layout })}
+      data-ad-slot={adSlot}
+      data-ad-format={adFormat}
+      data-full-width-responsive={fullWidthResponsive}
     />
-  );
+  )
 }
-
