@@ -81,17 +81,17 @@ export function HeroSection() {
       <div className="container px-4 mx-auto">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold mb-8">
-            <span className="text-gray-400">Discover </span>
+            <span className="text-gray-400">Discover Best </span>
             <span className="bg-gradient-to-r from-red-500 to-rose-500 text-transparent bg-clip-text">AI</span>
             {' '}
-            <span className="bg-gradient-to-r from-violet-500 to-purple-500 text-transparent bg-clip-text">Tools</span>
+            <span className="bg-gradient-to-r from-green-500 to-purple-500 text-transparent bg-clip-text">Tools</span>
             {' '}
-            <span className="text-gray-400">for Your</span>
+            <span className="text-gray-400">for Every Need</span>
             <br />
-            <span className="bg-gradient-to-r from-blue-500 to-cyan-500 text-transparent bg-clip-text">Business!</span>
+            <span className="bg-gradient-to-r from-blue-500 to-cyan-500 text-transparent bg-clip-text"> in One Place!</span>
           </h1>
           <p className="text-gray-400 text-xl mb-12">
-            Streamline Your Workflow with Our List of AI tools. Find Your Perfect Solution.
+            Explore, Compare, and Choose from a Curated Directory of AI Tools for Business, Creativity, Development, and More.
           </p>
           
           <div className="max-w-2xl mx-auto mb-12 relative" ref={searchRef}>
